@@ -1,6 +1,5 @@
 # 📦 Package Installer CLI
 
-[![npm version](https://img.shields.io/npm/v/@0xshariq/package-installer-cli.svg)](https://www.npmjs.com/package/@0xshariq/package-installer-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 
@@ -11,7 +10,7 @@ A **cross-platform, interactive CLI** to scaffold modern web application templat
 - **🎨 Multiple Frameworks**: React, Next.js, Express, Angular, Vue, Rust
 - **🔤 Language Support**: TypeScript & JavaScript variants
 - **🎭 UI Libraries**: Tailwind CSS, Material-UI, shadcn/ui
-- **📦 Smart Package Management**: Auto-detects npm, yarn, pnpm
+- **📦 Smart Package Management**: Auto-detects package managers
 - **⚡ Lightning Fast**: Optimized template generation with intelligent caching
 - **🌈 Beautiful CLI**: Gorgeous terminal interface with real-time analytics
 - **🔍 Project Analysis**: Advanced dependency analysis and project insights
@@ -33,7 +32,7 @@ For users who prefer a single binary without Node.js installation, we provide a 
 
 - **📦 Single File Distribution**: One executable file for your entire system
 - **🚀 Easy Deployment**: Perfect for CI/CD, Docker, or server environments  
-- **⚡ Fast Installation**: No npm/Node.js global packages to manage
+- **⚡ Fast Installation**: No global package management required
 - **🔒 Version Lock**: Specific CLI version bundled with the binary
 - **🐳 Container Friendly**: Smaller container images and easier packaging
 - **📋 Enterprise Ready**: Simplified distribution in corporate environments
@@ -42,7 +41,7 @@ For users who prefer a single binary without Node.js installation, we provide a 
 
 - **Node.js Still Required**: The Go binary is a wrapper around the TypeScript CLI
 - **Runtime Dependency**: Node.js must be available in PATH when running
-- **Same Features**: Identical functionality to the npm version
+- **Complete Features**: Full-featured CLI implementation
 - **Performance**: Minimal overhead, same execution speed
 
 ### 📦 Installation Methods
@@ -86,8 +85,8 @@ git clone https://github.com/0xshariq/go_package_installer_cli.git
 cd go_package_installer_cli
 
 # Install Node.js dependencies and build TypeScript
-npm install
-npm run build
+pnpm install
+pnpm run build
 
 # Build Go wrapper for current platform
 make build
@@ -111,90 +110,48 @@ chmod +x build.sh
 
 ## 📥 Installation
 
-### 🤔 Which Installation Method to Choose?
-
-| Use Case | Recommended Method | Why? |
-|----------|-------------------|------|
-| **Node.js Developer** | npm/yarn/pnpm | Native ecosystem, easy updates |
-| **DevOps/CI/CD** | Go Binary | Single file, version pinned |
-| **Docker/Containers** | Go Binary | Smaller images, fewer dependencies |
-| **Enterprise/Corporate** | Go Binary | Simplified distribution |
-| **Quick Testing** | npx | No installation required |
-| **Go Developer** | `go install` | Familiar toolchain |
-
-### Option 1: npm/yarn/pnpm (Recommended for Node.js users)
+### Method 1: Direct Download (Recommended)
 
 ```bash
-# Using npm
-npm install -g @0xshariq/package-installer-cli
+# Linux (x64)
+wget https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz
+tar -xzf package-installer-cli-linux-amd64.tar.gz
+sudo mv package-installer-cli /usr/local/bin/
 
-# Using yarn
-yarn global add @0xshariq/package-installer-cli
+# macOS (Intel)
+wget https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-darwin-amd64.tar.gz
+tar -xzf package-installer-cli-darwin-amd64.tar.gz
+sudo mv package-installer-cli /usr/local/bin/
 
-# Using pnpm (recommended)
-pnpm add -g @0xshariq/package-installer-cli
+# macOS (Apple Silicon)
+wget https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-darwin-arm64.tar.gz
+tar -xzf package-installer-cli-darwin-arm64.tar.gz
+sudo mv package-installer-cli /usr/local/bin/
+
+# Windows (PowerShell)
+Invoke-WebRequest -Uri "https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-windows-amd64.zip" -OutFile "package-installer-cli.zip"
+Expand-Archive -Path "package-installer-cli.zip" -DestinationPath "."
+# Add to PATH manually or move to a directory in PATH
 ```
 
-### Option 2: Go Binary (Single executable)
-
-#### Download and Install
-```bash
-# See the Go Binary Distribution section above for download links
-# Quick one-liner for Linux:
-curl -L https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz | tar -xz && sudo mv package-installer-cli /usr/local/bin/
-```
-
-#### Docker Usage
-```dockerfile
-# Multi-stage Dockerfile example
-FROM node:18-alpine as runtime
-RUN apk add --no-cache wget tar
-
-# Download the CLI binary
-RUN wget https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz \
-    && tar -xzf package-installer-cli-linux-amd64.tar.gz \
-    && mv package-installer-cli /usr/local/bin/ \
-    && rm package-installer-cli-linux-amd64.tar.gz
-
-# Copy dist files (if needed in your use case)
-# COPY dist/ /usr/local/share/package-installer-cli/dist/
-
-ENTRYPOINT ["package-installer-cli"]
-```
-
-#### CI/CD Integration
-```yaml
-# GitHub Actions example
-- name: Install Package Installer CLI
-  run: |
-    wget https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz
-    tar -xzf package-installer-cli-linux-amd64.tar.gz
-    sudo mv package-installer-cli /usr/local/bin/
-    
-- name: Generate Project
-  run: package-installer-cli create my-project --framework react --language typescript --non-interactive
-```
-
-### Option 3: npx (No installation required)
+### Method 2: Using Go Install
 
 ```bash
-# Use directly without installation
-npx @0xshariq/package-installer-cli create my-app
+# If you have Go installed
+go install github.com/0xshariq/go_package_installer_cli@latest
 ```
+
+
+
 
 ## 🎯 Quick Start
 
 ```bash
-# Create new project interactively (npm installation)
+# Create new project interactively
 pi create
-
-# Create new project interactively (Go binary)
-package-installer-cli create
 
 # Analyze project with enhanced dashboard
 pi analyze
-# or
-package-installer-cli analyze
 
 # Update project dependencies only
 pi update
@@ -207,10 +164,10 @@ pi upgrade-cli
 
 | Document | Description |
 |----------|-------------|
-| [📋 Commands](docs/commands.md) | Complete command reference with examples |
-| [⚡ Features](docs/features.md) | Detailed feature documentation and usage |
-| [🎨 Templates](docs/templates.md) | Available templates and customization options |
-| [🚀 Deployment](docs/deploy.md) | Deployment options and platform integration |
+| [📋 Commands](https://github.com/0xshariq/package-installer-cli/tree/main/docs/commands.md) | Complete command reference with examples |
+| [⚡ Features](https://github.com/0xshariq/package-installer-cli/tree/main/docs/features.md) | Detailed feature documentation and usage |
+| [🎨 Templates](https://github.com/0xshariq/package-installer-cli/tree/main/docs/templates.md) | Available templates and customization options |
+| [🚀 Deployment](https://github.com/0xshariq/package-installer-cli/tree/main/docs/deploy.md) | Deployment options and platform integration |
 
 ## 🛠️ Command Overview
 
@@ -224,7 +181,7 @@ pi upgrade-cli
 | `pi doctor` | Diagnose and fix project issues | `pi doctor` |
 | `pi clean` | Clean development artifacts | `pi clean [--all]` |
 
-*For complete command documentation, see [docs/commands.md](docs/commands.md)*
+*For complete command documentation, see [Commands](https://github.com/0xshariq/package-installer-cli/tree/main/docs/commands.md)*
 
 ## 🏗️ Supported Project Types
 
@@ -237,18 +194,11 @@ pi upgrade-cli
 | **Ruby** | Rails, Sinatra | bundler |
 | **PHP** | Laravel, Symfony | composer |
 
-*For detailed template information, see [docs/templates.md](docs/templates.md)*
+*For detailed template information, see [Templates](https://github.com/0xshariq/package-installer-cli/tree/main/docs/templates.md)*
 
 ## 🎯 System Requirements
 
-### For npm Installation
-- **Node.js**: 18.0.0 or higher
-- **Operating Systems**: Windows, macOS, Linux
-- **Package Managers**: npm, yarn, or pnpm
-- **Git**: Required for project initialization
-
-### For Go Binary
-- **Node.js**: 18.0.0 or higher (still required at runtime)
+- **Node.js**: 18.0.0 or higher (required at runtime)
 - **Operating Systems**: Windows, macOS, Linux (x64/ARM64)
 - **Git**: Required for project initialization
 - **Go**: Only required if building from source
@@ -287,16 +237,13 @@ package-installer-cli doctor
 
 ### General Questions
 
-**Q: What's the difference between the npm and Go binary versions?**
-A: Both execute the same TypeScript code. The Go binary is a wrapper that provides single-file distribution, while npm version integrates with Node.js ecosystem.
-
-**Q: Which version should I use?**
-A: Use npm version if you're a Node.js developer. Use Go binary for CI/CD, Docker, or simplified distribution.
+**Q: What is the Package Installer CLI?**
+A: A Go wrapper around a TypeScript CLI that provides single-file distribution for creating modern web application templates.
 
 **Q: Can I use this without Node.js?**
-A: No, Node.js is required for both versions as the core CLI is written in TypeScript.
+A: No, Node.js is required as the core CLI is written in TypeScript.
 
-### Go Binary Questions
+### Installation Questions
 
 **Q: Why is Node.js still required for the Go binary?**
 A: The Go binary is a wrapper around the TypeScript CLI. This approach allows us to maintain one codebase while providing Go distribution benefits.
@@ -305,7 +252,7 @@ A: The Go binary is a wrapper around the TypeScript CLI. This approach allows us
 A: Download the latest release from GitHub or run `go install github.com/0xshariq/go_package_installer_cli@latest`
 
 **Q: Can I build custom templates?**
-A: Yes, both versions support the same template system. See [docs/templates.md](docs/templates.md) for details.
+A: Yes, the CLI supports custom template system. See [templates](https://github.com/0xshariq/package-installer-cli/tree/main/docs/templates.md) for details.
 
 ### Troubleshooting
 
@@ -366,7 +313,6 @@ npm start
 ### � Upcoming Features
 
 - [ ] **Native Go CLI**: Rewrite core CLI in Go for true single-binary distribution
-- [ ] **Package Manager Integration**: Homebrew, Chocolatey, Snap packages
 - [ ] **Plugin System**: Custom template and feature plugins
 - [ ] **GUI Version**: Desktop application for visual project creation
 - [ ] **Cloud Templates**: Remote template repositories and sharing
@@ -391,7 +337,7 @@ We welcome contributions! Here's how you can help:
 - 🔧 **Add Templates**: Create new project templates
 - 🎨 **Add Features**: Implement new integrations and features
 
-See our [Contributing Guide](CONTRIBUTING.md) for detailed information.
+See our [Contributing Guide](https://github.com/0xshariq/package-installer-cli/tree/main/CONTRIBUTING.md) for detailed information.
 
 ## 📄 License
 
@@ -399,9 +345,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- **NPM Package**: [@0xshariq/package-installer-cli](https://www.npmjs.com/package/@0xshariq/package-installer-cli)
 - **GitHub Repository**: [go_package_installer_cli](https://github.com/0xshariq/go_package_installer_cli)
 - **Issues & Feedback**: [GitHub Issues](https://github.com/0xshariq/go_package_installer_cli/issues)
+- **Releases**: [GitHub Releases](https://github.com/0xshariq/go_package_installer_cli/releases)
 
 ---
 
