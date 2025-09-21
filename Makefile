@@ -23,6 +23,7 @@ clean:
 .PHONY: build
 build: clean
 	go build $(LDFLAGS) -o $(BUILD_DIR)/$(APP_NAME) .
+	go build $(LDFLAGS) -o $(BUILD_DIR)/pi .
 
 # Build for all platforms
 .PHONY: build-all
@@ -33,18 +34,24 @@ build-all: clean build-linux build-windows build-darwin
 build-linux:
 	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(APP_NAME)-linux-amd64 .
 	GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(APP_NAME)-linux-arm64 .
+	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/pi-linux-amd64 .
+	GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -o $(BUILD_DIR)/pi-linux-arm64 .
 
 # Build for Windows (amd64 and arm64)
 .PHONY: build-windows
 build-windows:
 	GOOS=windows GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(APP_NAME)-windows-amd64.exe .
 	GOOS=windows GOARCH=arm64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(APP_NAME)-windows-arm64.exe .
+	GOOS=windows GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/pi-windows-amd64.exe .
+	GOOS=windows GOARCH=arm64 go build $(LDFLAGS) -o $(BUILD_DIR)/pi-windows-arm64.exe .
 
 # Build for macOS (amd64 and arm64)
 .PHONY: build-darwin
 build-darwin:
 	GOOS=darwin GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(APP_NAME)-darwin-amd64 .
 	GOOS=darwin GOARCH=arm64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(APP_NAME)-darwin-arm64 .
+	GOOS=darwin GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/pi-darwin-amd64 .
+	GOOS=darwin GOARCH=arm64 go build $(LDFLAGS) -o $(BUILD_DIR)/pi-darwin-arm64 .
 
 # Create release packages
 .PHONY: package
@@ -71,18 +78,21 @@ package: build-all
 .PHONY: install
 install: build
 	sudo cp $(BUILD_DIR)/$(APP_NAME) /usr/local/bin/
-	@echo "$(APP_NAME) installed to /usr/local/bin/"
+	sudo cp $(BUILD_DIR)/pi /usr/local/bin/
+	@echo "$(APP_NAME) and pi installed to /usr/local/bin/"
 
 # Uninstall
 .PHONY: uninstall
 uninstall:
 	sudo rm -f /usr/local/bin/$(APP_NAME)
-	@echo "$(APP_NAME) uninstalled from /usr/local/bin/"
+	sudo rm -f /usr/local/bin/pi
+	@echo "$(APP_NAME) and pi uninstalled from /usr/local/bin/"
 
 # Test the build
 .PHONY: test
 test: build
 	$(BUILD_DIR)/$(APP_NAME) --help
+	$(BUILD_DIR)/pi --help
 
 # Show available targets
 .PHONY: help

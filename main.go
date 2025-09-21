@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 const (
@@ -19,6 +20,14 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error: Node.js is required but not found in PATH.\n")
 		fmt.Fprintf(os.Stderr, "Please install Node.js from https://nodejs.org/\n")
 		os.Exit(1)
+	}
+
+	// Get the binary name to determine how we were called
+	binaryName := filepath.Base(os.Args[0])
+	
+	// Remove extension if on Windows
+	if strings.HasSuffix(binaryName, ".exe") {
+		binaryName = strings.TrimSuffix(binaryName, ".exe")
 	}
 
 	// Get the directory where the binary is located
@@ -42,12 +51,15 @@ func main() {
 	}
 
 	// Prepare the command to run the Node.js CLI
+	// Whether called as 'pi' or 'package-installer-cli', we run the same Node.js CLI
 	args := []string{cliPath}
+	
+	// Pass through all command line arguments
 	if len(os.Args) > 1 {
 		args = append(args, os.Args[1:]...)
 	}
 
-	// Create and execute the command
+	// Create and execute the command: node dist/index.js [args...]
 	cmd := exec.Command("node", args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
