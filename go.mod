@@ -1,4 +1,4 @@
-module github.com/0xshariq/ruby_package_installer_cli
+module github.com/0xshariq/go_package_installer_cli
 
 go 1.21
 

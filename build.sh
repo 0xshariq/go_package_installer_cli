@@ -6,7 +6,7 @@
 set -e
 
 APP_NAME="package-installer-cli"
-VERSION="3.2.0"
+VERSION="1.0.0"
 BUILD_DIR="build"
 LDFLAGS="-ldflags \"-s -w -X main.appVersion=$VERSION\""
 
