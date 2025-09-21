@@ -51,22 +51,22 @@ For users who prefer a single binary without Node.js installation, we provide a 
 
 ```bash
 # Linux (x64)
-wget https://github.com/0xshariq/ruby_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz
+wget https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz
 tar -xzf package-installer-cli-linux-amd64.tar.gz
 sudo mv package-installer-cli /usr/local/bin/
 
 # macOS (Intel)
-wget https://github.com/0xshariq/ruby_package_installer_cli/releases/latest/download/package-installer-cli-darwin-amd64.tar.gz
+wget https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-darwin-amd64.tar.gz
 tar -xzf package-installer-cli-darwin-amd64.tar.gz
 sudo mv package-installer-cli /usr/local/bin/
 
 # macOS (Apple Silicon)
-wget https://github.com/0xshariq/ruby_package_installer_cli/releases/latest/download/package-installer-cli-darwin-arm64.tar.gz
+wget https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-darwin-arm64.tar.gz
 tar -xzf package-installer-cli-darwin-arm64.tar.gz
 sudo mv package-installer-cli /usr/local/bin/
 
 # Windows (PowerShell)
-Invoke-WebRequest -Uri "https://github.com/0xshariq/ruby_package_installer_cli/releases/latest/download/package-installer-cli-windows-amd64.zip" -OutFile "package-installer-cli.zip"
+Invoke-WebRequest -Uri "https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-windows-amd64.zip" -OutFile "package-installer-cli.zip"
 Expand-Archive -Path "package-installer-cli.zip" -DestinationPath "."
 # Add to PATH manually or move to a directory in PATH
 ```
@@ -75,28 +75,15 @@ Expand-Archive -Path "package-installer-cli.zip" -DestinationPath "."
 
 ```bash
 # If you have Go installed
-go install github.com/0xshariq/ruby_package_installer_cli@latest
-```
-
-#### Method 3: Package Managers (Coming Soon)
-
-```bash
-# Homebrew (macOS/Linux) - Coming Soon
-brew install 0xshariq/tap/package-installer-cli
-
-# Chocolatey (Windows) - Coming Soon  
-choco install package-installer-cli
-
-# Snap (Linux) - Coming Soon
-snap install package-installer-cli
+go install github.com/0xshariq/go_package_installer_cli@latest
 ```
 
 ### 🔧 Building from Source
 
 ```bash
 # Prerequisites: Go 1.21+ and Node.js 18+
-git clone https://github.com/0xshariq/ruby_package_installer_cli.git
-cd ruby_package_installer_cli
+git clone https://github.com/0xshariq/go_package_installer_cli.git
+cd go_package_installer_cli
 
 # Install Node.js dependencies and build TypeScript
 npm install
@@ -154,7 +141,7 @@ pnpm add -g @0xshariq/package-installer-cli
 ```bash
 # See the Go Binary Distribution section above for download links
 # Quick one-liner for Linux:
-curl -L https://github.com/0xshariq/ruby_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz | tar -xz && sudo mv package-installer-cli /usr/local/bin/
+curl -L https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz | tar -xz && sudo mv package-installer-cli /usr/local/bin/
 ```
 
 #### Docker Usage
@@ -164,7 +151,7 @@ FROM node:18-alpine as runtime
 RUN apk add --no-cache wget tar
 
 # Download the CLI binary
-RUN wget https://github.com/0xshariq/ruby_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz \
+RUN wget https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz \
     && tar -xzf package-installer-cli-linux-amd64.tar.gz \
     && mv package-installer-cli /usr/local/bin/ \
     && rm package-installer-cli-linux-amd64.tar.gz
@@ -180,7 +167,7 @@ ENTRYPOINT ["package-installer-cli"]
 # GitHub Actions example
 - name: Install Package Installer CLI
   run: |
-    wget https://github.com/0xshariq/ruby_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz
+    wget https://github.com/0xshariq/go_package_installer_cli/releases/latest/download/package-installer-cli-linux-amd64.tar.gz
     tar -xzf package-installer-cli-linux-amd64.tar.gz
     sudo mv package-installer-cli /usr/local/bin/
     
@@ -315,7 +302,7 @@ A: No, Node.js is required for both versions as the core CLI is written in TypeS
 A: The Go binary is a wrapper around the TypeScript CLI. This approach allows us to maintain one codebase while providing Go distribution benefits.
 
 **Q: How do I update the Go binary version?**
-A: Download the latest release from GitHub or run `go install github.com/0xshariq/ruby_package_installer_cli@latest`
+A: Download the latest release from GitHub or run `go install github.com/0xshariq/go_package_installer_cli@latest`
 
 **Q: Can I build custom templates?**
 A: Yes, both versions support the same template system. See [docs/templates.md](docs/templates.md) for details.
@@ -333,7 +320,7 @@ A: The dist/ directory must be alongside the Go binary. Re-extract the downloade
 ### 📁 Project Structure
 
 ```
-ruby_package_installer_cli/
+go_package_installer_cli/
 ├── main.go                    # Go wrapper entry point
 ├── go.mod                     # Go module definition
 ├── Makefile                   # Build automation
@@ -398,8 +385,8 @@ npm start
 
 We welcome contributions! Here's how you can help:
 
-- 🐛 **Report Bugs**: [GitHub Issues](https://github.com/0xshariq/ruby_package_installer_cli/issues)
-- 💡 **Suggest Features**: [Feature Requests](https://github.com/0xshariq/ruby_package_installer_cli/issues/new)
+- 🐛 **Report Bugs**: [GitHub Issues](https://github.com/0xshariq/go_package_installer_cli/issues)
+- 💡 **Suggest Features**: [Feature Requests](https://github.com/0xshariq/go_package_installer_cli/issues/new)
 - 📝 **Improve Documentation**: Submit PRs for documentation improvements
 - 🔧 **Add Templates**: Create new project templates
 - 🎨 **Add Features**: Implement new integrations and features
@@ -413,8 +400,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🔗 Links
 
 - **NPM Package**: [@0xshariq/package-installer-cli](https://www.npmjs.com/package/@0xshariq/package-installer-cli)
-- **GitHub Repository**: [ruby_package_installer_cli](https://github.com/0xshariq/ruby_package_installer_cli)
-- **Issues & Feedback**: [GitHub Issues](https://github.com/0xshariq/ruby_package_installer_cli/issues)
+- **GitHub Repository**: [go_package_installer_cli](https://github.com/0xshariq/go_package_installer_cli)
+- **Issues & Feedback**: [GitHub Issues](https://github.com/0xshariq/go_package_installer_cli/issues)
 
 ---
 
