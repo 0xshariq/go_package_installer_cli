@@ -1,5 +1,5 @@
 /**
- * Enhanced Cache Utility for Package Installer CLI v3.0.0
+ * Enhanced Cache Utility for Package Installer CLI v3.2.0
  * Advanced caching system with compression, encryption, and smart invalidation
  */
 import fs from 'fs-extra';

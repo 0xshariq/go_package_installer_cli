@@ -5,13 +5,14 @@
 import chalk from 'chalk';
 import gradient from 'gradient-string';
 import boxen from 'boxen';
+import { getPackageVersion } from './utils.js';
 /**
  * Generate the main CLI banner with gradient colors
  */
 export function generateBanner() {
     const packageGradient = gradient(['#00c6ff', '#4facfe', '#6c5ce7']);
     const installerGradient = gradient(['#fd79a8', '#e84393', '#fd79a8']);
-    return boxen(packageGradient('           ██████╗  █████╗  ██████╗██╗  ██╗ █████╗  ██████╗ ███████╗') + '\n' +
+    return boxen(packageGradient('  ██████╗  █████╗  ██████╗██╗  ██╗ █████╗  ██████╗ ███████╗') + '\n' +
         packageGradient('           ██╔══██╗██╔══██╗██╔════╝██║ ██╔╝██╔══██╗██╔════╝ ██╔════╝') + '\n' +
         packageGradient('           ██████╔╝███████║██║     █████╔╝ ███████║██║  ███╗█████╗  ') + '\n' +
         packageGradient('           ██╔═══╝ ██╔══██║██║     ██╔═██╗ ██╔══██║██║   ██║██╔══╝  ') + '\n' +
@@ -40,7 +41,8 @@ export function generateBanner() {
  * Generate version info banner
  */
 export function generateVersionBanner() {
-    return boxen(chalk.hex('#00d2d3')('📦 Version: ') + chalk.hex('#ffa502')('v3.2.0') +
+    const version = getPackageVersion();
+    return boxen(chalk.hex('#00d2d3')('📦 Version: ') + chalk.hex('#ffa502')(`v${version}`) +
         chalk.hex('#95afc0')('  •  ') + chalk.hex('#00d2d3')('🎯 Frameworks: ') + chalk.hex('#ffa502')('12+') +
         chalk.hex('#95afc0')('  •  ') + chalk.hex('#00d2d3')('📋 Templates: ') + chalk.hex('#ffa502')('50+') +
         chalk.hex('#95afc0')('  •  ') + chalk.hex('#00d2d3')('⚡ Status: ') + chalk.hex('#10ac84')('Ready to scaffold!'), {

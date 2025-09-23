@@ -4,17 +4,10 @@
  */
 import path from 'path';
 import fs from 'fs-extra';
-import { fileURLToPath } from 'url';
-// Get CLI installation directory
-function getCLIDirectory() {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    // Go up from src/utils to root directory
-    return path.resolve(__dirname, '..', '..');
-}
+import { getCliRootPath, getTemplatesPath } from './pathResolver.js';
 // Helper functions to read template.json
 function getTemplateConfig() {
-    const cliDir = getCLIDirectory();
+    const cliDir = getCliRootPath();
     const templatePath = path.join(cliDir, 'template.json');
     if (!fs.existsSync(templatePath)) {
         throw new Error(`template.json not found at: ${templatePath}`);
@@ -84,8 +77,7 @@ export function generateTemplateName(framework, options) {
  */
 export function resolveTemplatePath(projectInfo) {
     const { framework, language, templateName } = projectInfo;
-    const cliDir = getCLIDirectory();
-    const templatesRoot = path.join(cliDir, 'templates');
+    const templatesRoot = getTemplatesPath();
     // Handle combination templates (like reactjs+expressjs+shadcn)
     if (framework.includes('+')) {
         const frameworkDir = framework.replace(/\+/g, '-');
@@ -144,8 +136,8 @@ export function templateExists(templatePath) {
  * Get all available templates for a framework
  */
 export function getFrameworkTemplates(framework) {
-    const cliDir = getCLIDirectory();
-    const frameworkPath = path.join(cliDir, 'templates', framework);
+    const templatesRoot = getTemplatesPath();
+    const frameworkPath = path.join(templatesRoot, framework);
     if (!fs.existsSync(frameworkPath)) {
         return [];
     }

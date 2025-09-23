@@ -1,5 +1,5 @@
 /**
- * Template creation utilities for Package Installer CLI v3.0.0
+ * Template creation utilities for Package Installer CLI v3.2.0
  * Enhanced with features integration support
  */
 import fs from 'fs-extra';
@@ -329,11 +329,11 @@ async function initializeGitRepositoryForCreate(projectPath) {
         // Make initial commit
         try {
             gitSpinner.text = chalk.hex('#00d2d3')('Creating initial commit with gcommit...');
-            await execAsync('gcommit "Initial commit from Package Installer CLI v3.0.0"', { cwd: projectPath });
+            await execAsync('gcommit "Initial commit from Package Installer CLI v3.2.0"', { cwd: projectPath });
         }
         catch {
             gitSpinner.text = chalk.hex('#00d2d3')('Creating initial commit with git commit...');
-            await execAsync('git commit -m "Initial commit from Package Installer CLI v3.0.0"', { cwd: projectPath });
+            await execAsync('git commit -m "Initial commit from Package Installer CLI v3.2.0"', { cwd: projectPath });
         }
         gitSpinner.succeed(chalk.green('✅ Git repository initialized with initial commit'));
     }

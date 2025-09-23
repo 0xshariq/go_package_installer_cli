@@ -1,6 +1,6 @@
 /**
- * Enhanced Multi-language dependency installer utility for Package Installer CLI v3.0.0
- * Supports Node.js, Rust, Python, Go, Ruby, PHP, Java, C#, Swift, Dart/Flutter with modern features
+ * Enhanced Multi-language dependency installer utility for Package Installer CLI v3.2.0
+ * Supports Node.js, Python, Rust, Go, Ruby, and more with intelligent package management
  */
 import { exec } from 'child_process';
 import { promisify } from 'util';

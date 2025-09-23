@@ -18,17 +18,24 @@ import { deployCommand } from './commands/deploy.js';
 import { cleanCommand, showCleanHelp } from './commands/clean.js';
 import { environmentCommand, showEnvironmentHelp } from './commands/env.js';
 import { doctorCommand, showDoctorHelp } from './commands/doctor.js';
-// Import utilities
-import { showBanner } from './utils/ui.js';
 import { initializeCache } from './utils/cacheManager.js';
+import { displayBanner, displayCommandBanner } from './utils/banner.js';
+import { getPackageJsonPath } from './utils/pathResolver.js';
 // Get current file directory for ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// Load package.json to get version
-let packageJsonPath = join(__dirname, '../package.json');
-// Check if we're running from dist folder
-if (__dirname.includes('/dist/')) {
-    packageJsonPath = join(__dirname, '../../package.json');
+// Load package.json to get version using improved path resolution
+let packageJsonPath;
+try {
+    packageJsonPath = getPackageJsonPath();
+}
+catch (error) {
+    // Fallback to the old method if getPackageJsonPath fails
+    packageJsonPath = join(__dirname, '../package.json');
+    // Check if we're running from dist folder
+    if (__dirname.includes('/dist/')) {
+        packageJsonPath = join(__dirname, '../../package.json');
+    }
 }
 const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
 const VERSION = packageJson.version;
@@ -74,7 +81,7 @@ program
 })
     .action(async (projectName) => {
     try {
-        showBanner();
+        displayCommandBanner('create', 'Create a new project from templates');
         await createProject(projectName);
     }
     catch (error) {
@@ -206,7 +213,7 @@ program
 })
     .action(async (options) => {
     try {
-        showBanner();
+        displayCommandBanner('clean', 'Clean development artifacts and caches');
         await cleanCommand(options);
     }
     catch (error) {
@@ -336,7 +343,7 @@ program.on('--help', () => {
 });
 // ENHANCED DEFAULT BEHAVIOR - Beautiful banner and help when no command provided
 if (process.argv.length === 2) {
-    showBanner();
+    displayBanner();
     console.log('\n' + boxen(chalk.white('Welcome to Package Installer CLI! 👋') + '\n\n' +
         chalk.hex('#00d2d3')('🚀 Ready to build something amazing?') + '\n\n' +
         chalk.hex('#95afc0')('Start with these popular commands:') + '\n\n' +

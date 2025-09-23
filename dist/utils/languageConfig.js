@@ -1,5 +1,5 @@
 /**
- * Enhanced Language Configuration for Package Installer CLI v3.0.0
+ * Enhanced Language Configuration for Package Installer CLI v3.2.0
  * Comprehensive language support with modern tooling and advanced features
  */
 // Enhanced comprehensive language configurations
@@ -1200,7 +1200,7 @@ export const ENHANCED_LANGUAGE_CONFIGS = {
     // For brevity, I'm showing the structure with key languages implemented
 };
 /**
- * Enhanced utility functions for v3.0.0
+ * Enhanced utility functions for v3.2.0
  */
 export function getSupportedLanguages() {
     return Object.keys(ENHANCED_LANGUAGE_CONFIGS);

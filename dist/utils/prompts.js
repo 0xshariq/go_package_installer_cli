@@ -1,22 +1,15 @@
 /**
- * User interaction prompts for Package Installer CLI v3.0.0
+ * User interaction prompts for Package Installer CLI v3.2.0
  * Handles framework selection and template configuration based on template.json
  */
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
-import { fileURLToPath } from 'url';
-// Get CLI installation directory
-function getCLIDirectory() {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    // Go up from src/utils to root directory
-    return path.resolve(__dirname, '..', '..');
-}
+import { getCliRootPath, getFeaturesJsonPath } from './pathResolver.js';
 // Helper functions to read template.json
 function getTemplateConfig() {
-    const cliDir = getCLIDirectory();
+    const cliDir = getCliRootPath();
     const templatePath = path.join(cliDir, 'template.json');
     if (!fs.existsSync(templatePath)) {
         throw new Error(`template.json not found at: ${templatePath}`);
@@ -275,8 +268,7 @@ export async function promptFeatureSelection() {
         return [];
     }
     // Get available feature categories from features.json
-    const cliDir = getCLIDirectory();
-    const featuresPath = path.join(cliDir, 'features', 'features.json');
+    const featuresPath = getFeaturesJsonPath();
     if (!fs.existsSync(featuresPath)) {
         console.log(chalk.yellow('⚠️  Features configuration not found'));
         return [];
@@ -302,8 +294,7 @@ export async function promptFeatureSelection() {
  * Specific feature provider selection
  */
 export async function promptFeatureProvider(category, framework) {
-    const cliDir = getCLIDirectory();
-    const featuresPath = path.join(cliDir, 'features', 'features.json');
+    const featuresPath = getFeaturesJsonPath();
     const featuresConfig = JSON.parse(fs.readFileSync(featuresPath, 'utf-8'));
     if (!featuresConfig[category]) {
         return null;
