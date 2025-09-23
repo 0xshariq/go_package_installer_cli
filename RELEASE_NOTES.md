@@ -1,4 +1,4 @@
-# Package Installer CLI v1.0.0 Release Notes
+# Package Installer CLI v1.1.0 Release Notes
 
 ## 🚀 Complete Cross-Platform CLI Release
 
@@ -9,7 +9,7 @@
 - **🔧 Go Wrapper**: Complete rewrite as Go binary wrapping the TypeScript CLI
 - **📦 Standalone Distribution**: No npm dependency for end users
 - **🌍 Cross-Platform**: Linux, Windows, macOS (Intel + Apple Silicon)
-- **⚡ Dual Commands**: Both `package-installer-cli` and `pi` (short) variants
+- **⚡ Dual Commands**: Both `package-installer` and `pi` (short) variants
 - **📄 Documentation**: Complete README, LICENSE, and CONTRIBUTING guide
 - **🔐 Verified**: SHA256 checksums for all packages
 
@@ -108,4 +108,4 @@ Created by [Sharique Chaudhary](https://github.com/0xshariq)
 
 ---
 
-**Full Changelog**: https://github.com/0xshariq/go_package_installer_cli/commits/v1.0.0
+**Full Changelog**: https://github.com/0xshariq/go_package_installer_cli/commits/v1.1.0
