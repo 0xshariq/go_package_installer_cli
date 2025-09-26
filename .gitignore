@@ -4,9 +4,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# TypeScript
-*.tsbuildinfo
-
 # Go
 build/
 *.exe
@@ -25,18 +22,7 @@ go.work
 *.swo
 *~
 
-# OS
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
 # Distribution packages
 *.tar.gz
 *.zip
 
-# Logs
-*.log
