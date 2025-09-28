@@ -12,7 +12,7 @@ import { getPackageVersion } from './utils.js';
 export function generateBanner() {
     const packageGradient = gradient(['#00c6ff', '#4facfe', '#6c5ce7']);
     const installerGradient = gradient(['#fd79a8', '#e84393', '#fd79a8']);
-    return boxen(packageGradient('  ██████╗  █████╗  ██████╗██╗  ██╗ █████╗  ██████╗ ███████╗') + '\n' +
+    return boxen(packageGradient('           ██████╗  █████╗  ██████╗██╗  ██╗ █████╗  ██████╗ ███████╗') + '\n' +
         packageGradient('           ██╔══██╗██╔══██╗██╔════╝██║ ██╔╝██╔══██╗██╔════╝ ██╔════╝') + '\n' +
         packageGradient('           ██████╔╝███████║██║     █████╔╝ ███████║██║  ███╗█████╗  ') + '\n' +
         packageGradient('           ██╔═══╝ ██╔══██║██║     ██╔═██╗ ██╔══██║██║   ██║██╔══╝  ') + '\n' +
