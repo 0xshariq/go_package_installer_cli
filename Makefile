@@ -2,7 +2,7 @@
 
 # Variables
 APP_NAME = package-installer-cli
-VERSION = 1.1.0
+VERSION = 1.3.0
 BUILD_DIR = build
 DIST_DIR = dist
 
