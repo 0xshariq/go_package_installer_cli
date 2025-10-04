@@ -58,32 +58,8 @@ create_package() {
     # Copy features directory
     cp -r "features" "$package_dir/"
     
-    # Create README for the package
-    cat > "$package_dir/README.txt" << EOF
-Package Installer CLI v$VERSION
-==============================
-
-This package contains:
-- $binary_name$extension: Main CLI binary
-- dist/: TypeScript CLI implementation
-- package.json: Package configuration
-- template.json: Template definitions
-- templates/: Project templates
-- features/: Feature integrations
-
-Installation:
-1. Extract this package
-2. Add the binary to your PATH
-3. Ensure Node.js is installed
-4. Run: $binary_name --help
-
-For more information, visit:
-https://github.com/0xshariq/go_package_installer_cli
-
-The binary can be used as both:
-- package-installer-cli [command]
-- pi [command]
-EOF
+    # Copy README.md
+    cp "README.md" "$package_dir/"
 
     # Create tar.gz package
     cd "$BUILD_DIR"
@@ -147,34 +123,8 @@ create_package() {
     # Copy features directory
     cp -r "features" "$package_dir/"
     
-    # Create README for the package
-    cat > "$package_dir/README.txt" << EOF
-Package Installer CLI (pi) v$VERSION
-====================================
-
-This package contains:
-- pi$extension: CLI binary (short command)
-- dist/: TypeScript CLI implementation
-- package.json: Package configuration
-- template.json: Template definitions
-- templates/: Project templates
-- features/: Feature integrations
-
-Installation:
-1. Extract this package
-2. Add the binary to your PATH
-3. Ensure Node.js is installed
-4. Run: pi --help
-
-Usage:
-- pi create my-app
-- pi analyze
-- pi update
-- pi add auth
-
-For more information, visit:
-https://github.com/0xshariq/go_package_installer_cli
-EOF
+    # Copy README.md
+    cp "README.md" "$package_dir/"
 
     # Create tar.gz package
     cd "$BUILD_DIR"
