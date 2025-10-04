@@ -60,6 +60,14 @@ create_package() {
     
     # Copy README.md
     cp "README.md" "$package_dir/"
+    
+    # Copy INSTALLATION.md
+    cp "INSTALLATION.md" "$package_dir/"
+    
+    # Create setup scripts
+    cp "setup_template.sh" "$package_dir/setup.sh"
+    cp "setup_template.bat" "$package_dir/setup.bat"
+    chmod +x "$package_dir/setup.sh"
 
     # Create tar.gz package
     cd "$BUILD_DIR"
@@ -125,6 +133,14 @@ create_package() {
     
     # Copy README.md
     cp "README.md" "$package_dir/"
+    
+    # Copy INSTALLATION.md
+    cp "INSTALLATION.md" "$package_dir/"
+    
+    # Create setup scripts
+    cp "setup_template.sh" "$package_dir/setup.sh"
+    cp "setup_template.bat" "$package_dir/setup.bat"
+    chmod +x "$package_dir/setup.sh"
 
     # Create tar.gz package
     cd "$BUILD_DIR"
