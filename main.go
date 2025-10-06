@@ -1,7 +1,11 @@
+
 package main
 
 import (
+	"embed"
 	"fmt"
+	"io/fs"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -10,83 +14,84 @@ import (
 	"time"
 )
 
+
 const (
 	appName    = "Package Installer CLI"
-	appVersion = "1.4.0"
+	appVersion = "2.0.0"
 )
 
+//go:embed bundle-executables/**
+var embeddedBundle embed.FS
+
+
 func main() {
-	// Check if Node.js is available
-	if !isNodeAvailable() {
-		fmt.Fprintf(os.Stderr, "Error: Node.js is required but not found in PATH.\n")
-		fmt.Fprintf(os.Stderr, "Please install Node.js from https://nodejs.org/\n")
-		os.Exit(1)
-	}
-
-	// Get the binary name to determine how we were called
-	binaryName := filepath.Base(os.Args[0])
-	
-	// Remove extension if on Windows
-	if strings.HasSuffix(binaryName, ".exe") {
-		binaryName = strings.TrimSuffix(binaryName, ".exe")
-	}
-
-	// Get the directory where the binary is located
-	execPath, err := os.Executable()
+	// 1. Extract embedded bundle to a temp directory
+	tempDir, err := ioutil.TempDir("", "pi-bundle-*")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error getting executable path: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error creating temp directory: %v\n", err)
 		os.Exit(1)
 	}
-	
-	// Get the directory containing the executable
-	execDir := filepath.Dir(execPath)
-	
-	// Path to the compiled TypeScript CLI
-	cliPath := filepath.Join(execDir, "dist", "index.js")
-	
-	// Check if the CLI file exists
-	if _, err := os.Stat(cliPath); os.IsNotExist(err) {
-		fmt.Fprintf(os.Stderr, "Error: CLI file not found at %s\n", cliPath)
-		fmt.Fprintf(os.Stderr, "Make sure the dist/ directory is present alongside the binary.\n")
-		os.Exit(1)
-	}
+	defer os.RemoveAll(tempDir)
 
-	// Check if dependencies are installed, if not run setup automatically
-	if !areDependenciesInstalled(execDir) {
-		fmt.Println("🔧 First time setup required. Installing dependencies...")
-		if err := runSetupScript(execDir); err != nil {
-			fmt.Fprintf(os.Stderr, "Error during setup: %v\n", err)
-			fmt.Fprintf(os.Stderr, "Please run the setup script manually:\n")
-			if runtime.GOOS == "windows" {
-				fmt.Fprintf(os.Stderr, "  %s\\setup.bat\n", execDir)
-			} else {
-				fmt.Fprintf(os.Stderr, "  %s/setup.sh\n", execDir)
-			}
-			os.Exit(1)
+	// Copy all embedded files to tempDir
+	err = fs.WalkDir(embeddedBundle, "bundle-executables", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
 		}
+		relPath := strings.TrimPrefix(path, "bundle-executables/")
+		if relPath == "" {
+			return nil
+		}
+		outPath := filepath.Join(tempDir, relPath)
+		if d.IsDir() {
+			return os.MkdirAll(outPath, 0755)
+		}
+		data, err := embeddedBundle.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		return ioutil.WriteFile(outPath, data, 0755)
+	})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error extracting embedded bundle: %v\n", err)
+		os.Exit(1)
 	}
 
-	// Prepare the command to run the Node.js CLI
-	// Whether called as 'pi' or 'package-installer-cli', we run the same Node.js CLI
-	args := []string{cliPath}
-	
-	// Pass through all command line arguments
-	if len(os.Args) > 1 {
-		args = append(args, os.Args[1:]...)
+	// 2. Determine the correct script to run based on platform
+	var scriptPath string
+	switch runtime.GOOS {
+	case "windows":
+		scriptPath = filepath.Join(tempDir, "pi.bat")
+		if _, err := os.Stat(scriptPath); os.IsNotExist(err) {
+			scriptPath = filepath.Join(tempDir, "pi.exe")
+		}
+	case "darwin":
+		scriptPath = filepath.Join(tempDir, "pi-macos")
+		if _, err := os.Stat(scriptPath); os.IsNotExist(err) {
+			scriptPath = filepath.Join(tempDir, "pi")
+		}
+	default:
+		scriptPath = filepath.Join(tempDir, "pi")
 	}
 
-	// Create and execute the command: node dist/index.js [args...]
-	cmd := exec.Command("node", args...)
+	// Make sure the script is executable (for Unix)
+	if runtime.GOOS != "windows" {
+		os.Chmod(scriptPath, 0755)
+	}
+
+	// 3. Prepare the command to run the script, passing all arguments
+	args := os.Args[1:]
+	cmd := exec.Command(scriptPath, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
-	// Run the command and exit with the same code
+	// 4. Run the script and exit with the same code
 	if err := cmd.Run(); err != nil {
 		if exitError, ok := err.(*exec.ExitError); ok {
 			os.Exit(exitError.ExitCode())
 		}
-		fmt.Fprintf(os.Stderr, "Error executing command: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error executing pi script: %v\n", err)
 		os.Exit(1)
 	}
 }
