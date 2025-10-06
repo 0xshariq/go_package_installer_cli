@@ -13,163 +13,41 @@ echo "🚀 Creating Package Installer CLI Release Packages v$VERSION"
 
 # Ensure build directory exists
 if [ ! -d "$BUILD_DIR" ]; then
-    echo "❌ Build directory not found. Run 'make build-all' first."
+    echo "❌ Build directory not found. Run build.sh first."
     exit 1
 fi
 
-# Ensure dist directory exists
-if [ ! -d "$DIST_DIR" ]; then
-    echo "❌ Dist directory not found. Build the TypeScript CLI first."
-    exit 1
-fi
+echo "📦 Creating platform-specific tar.gz packages..."
 
-echo "📦 Creating distribution packages..."
-
-# Function to create a package
-create_package() {
-    local binary_name=$1
-    local platform=$2
-    local arch=$3
-    local extension=$4
-    
-    local package_name="package-installer-cli-$VERSION-$platform-$arch"
-    local package_dir="$BUILD_DIR/$package_name"
-    
-    echo "  📦 Creating package: $package_name"
-    
-    # Create package directory
-    mkdir -p "$package_dir"
-    
-    # Copy binary
-    cp "$BUILD_DIR/$binary_name$extension" "$package_dir/"
-    
-    # Copy dist directory
-    cp -r "$DIST_DIR" "$package_dir/"
-    
-    # Copy package.json
-    cp "package.json" "$package_dir/"
-    
-    # Copy template.json
-    cp "template.json" "$package_dir/"
-    
-    # Copy templates directory
-    cp -r "templates" "$package_dir/"
-    
-    # Copy features directory
-    cp -r "features" "$package_dir/"
-    
-    # Copy README.md
-    cp "README.md" "$package_dir/"
-    
-    # Copy INSTALLATION.md
-    cp "INSTALLATION.md" "$package_dir/"
-    
-    # Create setup scripts
-    cp "setup_template.sh" "$package_dir/setup.sh"
-    cp "setup_template.bat" "$package_dir/setup.bat"
-    chmod +x "$package_dir/setup.sh"
-
-    # Create tar.gz package
-    cd "$BUILD_DIR"
-    tar -czf "$package_name.tar.gz" "$package_name"
-    cd ..
-    
-    # Remove temporary directory
-    rm -rf "$package_dir"
-    
-    echo "  ✅ Created: $BUILD_DIR/$package_name.tar.gz"
-}
-
-# Create packages for all platforms
-echo "🔨 Creating Linux packages..."
-create_package "package-installer-cli-linux-amd64" "linux" "amd64" ""
-create_package "package-installer-cli-linux-arm64" "linux" "arm64" ""
-
-echo "🔨 Creating Windows packages..."
-create_package "package-installer-cli-windows-amd64.exe" "windows" "amd64" ""
-create_package "package-installer-cli-windows-arm64.exe" "windows" "arm64" ""
-
-echo "🔨 Creating macOS packages..."
-create_package "package-installer-cli-darwin-amd64" "darwin" "amd64" ""
-create_package "package-installer-cli-darwin-arm64" "darwin" "arm64" ""
-
-# Create pi-specific packages
-echo "🔨 Creating pi binary packages..."
-create_package() {
-    local binary_name=$1
-    local platform=$2
-    local arch=$3
-    local extension=$4
-    
-    local package_name="pi-$VERSION-$platform-$arch"
-    local package_dir="$BUILD_DIR/$package_name"
-    
-    echo "  📦 Creating package: $package_name"
-    
-    # Create package directory
-    mkdir -p "$package_dir"
-    
-    # Copy binary (rename to pi)
-    if [ "$platform" = "windows" ]; then
-        cp "$BUILD_DIR/$binary_name" "$package_dir/pi.exe"
+cd "$BUILD_DIR"
+for dir in bundle-linux-amd64 bundle-linux-arm64 bundle-macos-amd64 bundle-macos-arm64 bundle-windows-amd64 bundle-windows-arm64; do
+    if [ -d "$dir" ]; then
+        # Determine platform and arch from directory name
+        # Format: bundle-<platform>-<arch>
+        platform_arch=${dir#bundle-}
+        # For package-installer-cli
+        tar -czf "package-installer-cli-$VERSION-$platform_arch.tar.gz" "$dir/package-installer-cli" -C "$dir" .
+        echo "  ✅ Created: package-installer-cli-$VERSION-$platform_arch.tar.gz"
+        # For pi
+        if [[ $platform_arch == windows-* ]]; then
+            tar -czf "pi-$VERSION-$platform_arch.tar.gz" "$dir/pi.exe" -C "$dir" .
+            echo "  ✅ Created: pi-$VERSION-$platform_arch.tar.gz"
+        else
+            tar -czf "pi-$VERSION-$platform_arch.tar.gz" "$dir/pi" -C "$dir" .
+            echo "  ✅ Created: pi-$VERSION-$platform_arch.tar.gz"
+        fi
     else
-        cp "$BUILD_DIR/$binary_name" "$package_dir/pi"
+        echo "  ⚠️  Skipped missing directory: $dir"
     fi
-    
-    # Copy dist directory
-    cp -r "$DIST_DIR" "$package_dir/"
-    
-    # Copy package.json
-    cp "package.json" "$package_dir/"
-    
-    # Copy template.json
-    cp "template.json" "$package_dir/"
-    
-    # Copy templates directory
-    cp -r "templates" "$package_dir/"
-    
-    # Copy features directory
-    cp -r "features" "$package_dir/"
-    
-    # Copy README.md
-    cp "README.md" "$package_dir/"
-    
-    # Copy INSTALLATION.md
-    cp "INSTALLATION.md" "$package_dir/"
-    
-    # Create setup scripts
-    cp "setup_template.sh" "$package_dir/setup.sh"
-    cp "setup_template.bat" "$package_dir/setup.bat"
-    chmod +x "$package_dir/setup.sh"
-
-    # Create tar.gz package
-    cd "$BUILD_DIR"
-    tar -czf "$package_name.tar.gz" "$package_name"
-    cd ..
-    
-    # Remove temporary directory
-    rm -rf "$package_dir"
-    
-    echo "  ✅ Created: $BUILD_DIR/$package_name.tar.gz"
-}
-
-create_package "pi-linux-amd64" "linux" "amd64" ""
-create_package "pi-linux-arm64" "linux" "arm64" ""
-create_package "pi-windows-amd64.exe" "windows" "amd64" ".exe"
-create_package "pi-windows-arm64.exe" "windows" "arm64" ".exe"
-create_package "pi-darwin-amd64" "darwin" "amd64" ""
-create_package "pi-darwin-arm64" "darwin" "arm64" ""
+done
+cd ..
 
 echo ""
-echo "✅ All packages created successfully!"
-echo "📁 Release packages are in the $BUILD_DIR/ directory:"
-echo ""
-ls -la "$BUILD_DIR"/*.tar.gz
-
+echo "✅ All platform/arch bundles packaged as tar.gz in $BUILD_DIR/"
+ls -lh $BUILD_DIR/*.tar.gz
 echo ""
 echo "🚀 Ready for distribution!"
 echo "📋 Next steps:"
-echo "  1. Upload packages to GitHub Releases"
-echo "  2. Create checksums: sha256sum build/*.tar.gz > build/checksums.txt"
-echo "  3. Test packages on different platforms"
-echo "  4. Update documentation with download links"
+echo "  1. Upload the tar.gz files to your release platform."
+echo "  2. Test the bundles on different platforms."
+echo "  3. Update documentation with download links."
