@@ -5,7 +5,7 @@
 
 set -e
 
-VERSION="1.4.0"
+VERSION="2.0.0"
 BUILD_DIR="build"
 DIST_DIR="dist"
 
@@ -20,24 +20,16 @@ fi
 echo "📦 Creating platform-specific tar.gz packages..."
 
 cd "$BUILD_DIR"
-for dir in bundle-linux-amd64 bundle-linux-arm64 bundle-macos-amd64 bundle-macos-arm64 bundle-windows-amd64 bundle-windows-arm64; do
-    if [ -d "$dir" ]; then
-        # Determine platform and arch from directory name
-        # Format: bundle-<platform>-<arch>
-        platform_arch=${dir#bundle-}
-        # For package-installer-cli
-        tar -czf "package-installer-cli-$VERSION-$platform_arch.tar.gz" "$dir/package-installer-cli" -C "$dir" .
-        echo "  ✅ Created: package-installer-cli-$VERSION-$platform_arch.tar.gz"
-        # For pi
-        if [[ $platform_arch == windows-* ]]; then
-            tar -czf "pi-$VERSION-$platform_arch.tar.gz" "$dir/pi.exe" -C "$dir" .
-            echo "  ✅ Created: pi-$VERSION-$platform_arch.tar.gz"
-        else
-            tar -czf "pi-$VERSION-$platform_arch.tar.gz" "$dir/pi" -C "$dir" .
-            echo "  ✅ Created: pi-$VERSION-$platform_arch.tar.gz"
-        fi
+for bin in package-installer-cli-linux-amd64 package-installer-cli-linux-arm64 package-installer-cli-macos-amd64 package-installer-cli-macos-arm64 package-installer-cli-windows-amd64.exe package-installer-cli-windows-arm64.exe pi-linux-amd64 pi-linux-arm64 pi-macos-amd64 pi-macos-arm64 pi-windows-amd64.exe pi-windows-arm64.exe; do
+    if [ -f "$BUILD_DIR/$bin" ]; then
+        # Extract platform and arch from binary name
+        name=$(echo $bin | sed 's/\.[^.]*$//')
+        # Remove .exe for tarball name
+        tarname="$name-$VERSION.tar.gz"
+        tar -czf "$BUILD_DIR/$tarname" -C "$BUILD_DIR" "$bin"
+        echo "  ✅ Created: $tarname"
     else
-        echo "  ⚠️  Skipped missing directory: $dir"
+        echo "  ⚠️  Skipped missing binary: $bin"
     fi
 done
 cd ..
@@ -51,3 +43,4 @@ echo "📋 Next steps:"
 echo "  1. Upload the tar.gz files to your release platform."
 echo "  2. Test the bundles on different platforms."
 echo "  3. Update documentation with download links."
+echo "  4. Run sha256sum build/*.tar.gz > build/checksums.txt and include checksums in the release notes."
