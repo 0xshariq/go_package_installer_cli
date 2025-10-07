@@ -7,7 +7,7 @@ set -e
 
 APP_NAME="package-installer-cli"
 BUILD_DIR="build"
-VERSION="2.0.0"
+VERSION="2.1.0"
 LDFLAGS="-s -w -X main.appVersion=$VERSION"
 
 # Clean and create build directory

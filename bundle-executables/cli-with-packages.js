@@ -1237,6 +1237,39 @@ module.exports.makeDirSync = (dir, options) => {
 
 /***/ }),
 
+/***/ 279:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+/**
+ * @otplib/plugin-crypto
+ *
+ * @author Gerald Yeo <contact@fusedthought.com>
+ * @version: 12.0.1
+ * @license: MIT
+ **/
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var crypto = _interopDefault(__webpack_require__(6982));
+
+const createDigest = (algorithm, hmacKey, counter) => {
+  const hmac = crypto.createHmac(algorithm, Buffer.from(hmacKey, 'hex'));
+  const digest = hmac.update(Buffer.from(counter, 'hex')).digest();
+  return digest.toString('hex');
+};
+const createRandomBytes = (size, encoding) => {
+  return crypto.randomBytes(size).toString(encoding);
+};
+
+exports.createDigest = createDigest;
+exports.createRandomBytes = createRandomBytes;
+
+
+/***/ }),
+
 /***/ 287:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -2231,6 +2264,20 @@ function isSubscriber(value) {
     return (value && value instanceof Subscriber_1.Subscriber) || (isObserver(value) && Subscription_1.isSubscription(value));
 }
 //# sourceMappingURL=Observable.js.map
+
+/***/ }),
+
+/***/ 543:
+/***/ ((module) => {
+
+module.exports = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
 
 /***/ }),
 
@@ -3641,6 +3688,39 @@ if (!processOk(process)) {
     }
   }
 }
+
+
+/***/ }),
+
+/***/ 942:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+/*                                                                              
+Copyright (c) 2011, Chris Umbel
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in      
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+THE SOFTWARE.
+*/
+
+var base32 = __webpack_require__(1103);
+
+exports.encode = base32.encode;
+exports.decode = base32.decode;
 
 
 /***/ }),
@@ -6698,6 +6778,141 @@ exports.AsapScheduler = AsapScheduler;
 
 /***/ }),
 
+/***/ 1103:
+/***/ ((__unused_webpack_module, exports) => {
+
+/*
+Copyright (c) 2011, Chris Umbel
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+
+var charTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+var byteTable = [
+    0xff, 0xff, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
+    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+    0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+    0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
+    0x17, 0x18, 0x19, 0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+    0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+    0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
+    0x17, 0x18, 0x19, 0xff, 0xff, 0xff, 0xff, 0xff
+];
+
+function quintetCount(buff) {
+    var quintets = Math.floor(buff.length / 5);
+    return buff.length % 5 === 0 ? quintets: quintets + 1;
+}
+
+exports.encode = function(plain) {
+    if(!Buffer.isBuffer(plain)){
+    	plain = new Buffer(plain);
+    }
+    var i = 0;
+    var j = 0;
+    var shiftIndex = 0;
+    var digit = 0;
+    var encoded = new Buffer(quintetCount(plain) * 8);
+
+    /* byte by byte isn't as pretty as quintet by quintet but tests a bit
+        faster. will have to revisit. */
+    while(i < plain.length) {
+        var current = plain[i];
+
+        if(shiftIndex > 3) {
+            digit = current & (0xff >> shiftIndex);
+            shiftIndex = (shiftIndex + 5) % 8;
+            digit = (digit << shiftIndex) | ((i + 1 < plain.length) ?
+                plain[i + 1] : 0) >> (8 - shiftIndex);
+            i++;
+        } else {
+            digit = (current >> (8 - (shiftIndex + 5))) & 0x1f;
+            shiftIndex = (shiftIndex + 5) % 8;
+            if(shiftIndex === 0) i++;
+        }
+
+        encoded[j] = charTable.charCodeAt(digit);
+        j++;
+    }
+
+    for(i = j; i < encoded.length; i++) {
+        encoded[i] = 0x3d; //'='.charCodeAt(0)
+    }
+
+    return encoded;
+};
+
+exports.decode = function(encoded) {
+    var shiftIndex = 0;
+    var plainDigit = 0;
+    var plainChar;
+    var plainPos = 0;
+    if(!Buffer.isBuffer(encoded)){
+    	encoded = new Buffer(encoded);
+    }
+    var decoded = new Buffer(Math.ceil(encoded.length * 5 / 8));
+
+    /* byte by byte isn't as pretty as octet by octet but tests a bit
+        faster. will have to revisit. */
+    for(var i = 0; i < encoded.length; i++) {
+    	if(encoded[i] === 0x3d){ //'='
+    		break;
+    	}
+
+        var encodedByte = encoded[i] - 0x30;
+
+        if(encodedByte < byteTable.length) {
+            plainDigit = byteTable[encodedByte];
+
+            if(shiftIndex <= 3) {
+                shiftIndex = (shiftIndex + 5) % 8;
+
+                if(shiftIndex === 0) {
+                    plainChar |= plainDigit;
+                    decoded[plainPos] = plainChar;
+                    plainPos++;
+                    plainChar = 0;
+                } else {
+                    plainChar |= 0xff & (plainDigit << (8 - shiftIndex));
+                }
+            } else {
+                shiftIndex = (shiftIndex + 5) % 8;
+                plainChar |= 0xff & (plainDigit >>> shiftIndex);
+                decoded[plainPos] = plainChar;
+                plainPos++;
+
+                plainChar = 0xff & (plainDigit << (8 - shiftIndex));
+            }
+        } else {
+        	throw new Error('Invalid input - it is not base32 encoded string');
+        }
+    }
+
+    return decoded.slice(0, plainPos);
+};
+
+
+/***/ }),
+
 /***/ 1205:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -9508,6 +9723,285 @@ function windowToggle(openings, closingSelector) {
 }
 exports.windowToggle = windowToggle;
 //# sourceMappingURL=windowToggle.js.map
+
+/***/ }),
+
+/***/ 1678:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var QRMode = __webpack_require__(9802);
+var QRPolynomial = __webpack_require__(5739);
+var QRMath = __webpack_require__(6543);
+var QRMaskPattern = __webpack_require__(9207);
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+module.exports = QRUtil;
+
 
 /***/ }),
 
@@ -14036,6 +14530,475 @@ if (process.platform === 'linux') {
 
 /***/ }),
 
+/***/ 2304:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = __webpack_require__(2696);
+var QRUtil = __webpack_require__(1678);
+var QRPolynomial = __webpack_require__(5739);
+var QRRSBlock = __webpack_require__(7129);
+var QRBitBuffer = __webpack_require__(4880);
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+module.exports = QRCode;
+
+
+/***/ }),
+
 /***/ 2309:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -16256,6 +17219,35 @@ function raceInit(sources) {
 }
 exports.raceInit = raceInit;
 //# sourceMappingURL=race.js.map
+
+/***/ }),
+
+/***/ 2696:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var QRMode = __webpack_require__(9802);
+
+function QR8bitByte(data) {
+	this.mode = QRMode.MODE_8BIT_BYTE;
+	this.data = data;
+}
+
+QR8bitByte.prototype = {
+
+	getLength : function() {
+		return this.data.length;
+	},
+	
+	write : function(buffer) {
+		for (var i = 0; i < this.data.length; i++) {
+			// not JIS ...
+			buffer.put(this.data.charCodeAt(i), 8);
+		}
+	}
+};
+
+module.exports = QR8bitByte;
+
 
 /***/ }),
 
@@ -19113,6 +20105,37 @@ function popNumber(args, defaultValue) {
 }
 exports.popNumber = popNumber;
 //# sourceMappingURL=args.js.map
+
+/***/ }),
+
+/***/ 3523:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+/**
+ * @otplib/plugin-thirty-two
+ *
+ * @author Gerald Yeo <contact@fusedthought.com>
+ * @version: 12.0.1
+ * @license: MIT
+ **/
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var thirtyTwo = _interopDefault(__webpack_require__(942));
+
+const keyDecoder = (encodedSecret, encoding) => {
+  return thirtyTwo.decode(encodedSecret).toString(encoding);
+};
+const keyEncoder = (secret, encoding) => {
+  return thirtyTwo.encode(Buffer.from(secret, encoding).toString('ascii')).toString().replace(/=/g, '');
+};
+
+exports.keyDecoder = keyDecoder;
+exports.keyEncoder = keyEncoder;
+
 
 /***/ }),
 
@@ -23760,6 +24783,36 @@ exports.zipWith = zipWith;
 
 /***/ }),
 
+/***/ 4283:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+/**
+ * otplib
+ *
+ * @author Gerald Yeo <contact@fusedthought.com>
+ * @version: 12.0.1
+ * @license: MIT
+ **/
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+var presetDefault = __webpack_require__(8095);
+
+
+
+Object.keys(presetDefault).forEach(function (k) {
+	if (k !== 'default') Object.defineProperty(exports, k, {
+		enumerable: true,
+		get: function () {
+			return presetDefault[k];
+		}
+	});
+});
+
+
+/***/ }),
+
 /***/ 4301:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -27485,6 +28538,51 @@ module.exports = {
 
 /***/ }),
 
+/***/ 4880:
+/***/ ((module) => {
+
+function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+module.exports = QRBitBuffer;
+
+
+/***/ }),
+
 /***/ 4884:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -30479,6 +31577,79 @@ exports.mergeAll = mergeAll;
 
 /***/ }),
 
+/***/ 5739:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var QRMath = __webpack_require__(6543);
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+module.exports = QRPolynomial;
+
+
+/***/ }),
+
 /***/ 5743:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -32050,6 +33221,113 @@ exports.timestamp = timestamp;
 
 /***/ }),
 
+/***/ 6273:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var QRCode = __webpack_require__(2304),
+    QRErrorCorrectLevel = __webpack_require__(543),
+    black = "\x1b[40m  \x1b[0m",
+    white = "\x1b[47m  \x1b[0m",
+    toCell = function (isBlack) {
+        return isBlack ? black : white;
+    },
+    repeat = function (color) {
+        return {
+            times: function (count) {
+                return new Array(count).join(color);
+            }
+        };
+    },
+    fill = function(length, value) {
+        var arr = new Array(length);
+        for (var i = 0; i < length; i++) {
+            arr[i] = value;
+        }
+        return arr;
+    };
+
+module.exports = {
+
+    error: QRErrorCorrectLevel.L,
+
+    generate: function (input, opts, cb) {
+        if (typeof opts === 'function') {
+            cb = opts;
+            opts = {};
+        }
+
+        var qrcode = new QRCode(-1, this.error);
+        qrcode.addData(input);
+        qrcode.make();
+
+        var output = '';
+        if (opts && opts.small) {
+            var BLACK = true, WHITE = false;
+            var moduleCount = qrcode.getModuleCount();
+            var moduleData = qrcode.modules.slice();
+
+            var oddRow = moduleCount % 2 === 1;
+            if (oddRow) {
+                moduleData.push(fill(moduleCount, WHITE));
+            }
+
+            var platte= {
+                WHITE_ALL: '\u2588',
+                WHITE_BLACK: '\u2580',
+                BLACK_WHITE: '\u2584',
+                BLACK_ALL: ' ',
+            };
+
+            var borderTop = repeat(platte.BLACK_WHITE).times(moduleCount + 3);
+            var borderBottom = repeat(platte.WHITE_BLACK).times(moduleCount + 3);
+            output += borderTop + '\n';
+
+            for (var row = 0; row < moduleCount; row += 2) {
+                output += platte.WHITE_ALL;
+
+                for (var col = 0; col < moduleCount; col++) {
+                    if (moduleData[row][col] === WHITE && moduleData[row + 1][col] === WHITE) {
+                        output += platte.WHITE_ALL;
+                    } else if (moduleData[row][col] === WHITE && moduleData[row + 1][col] === BLACK) {
+                        output += platte.WHITE_BLACK;
+                    } else if (moduleData[row][col] === BLACK && moduleData[row + 1][col] === WHITE) {
+                        output += platte.BLACK_WHITE;
+                    } else {
+                        output += platte.BLACK_ALL;
+                    }
+                }
+
+                output += platte.WHITE_ALL + '\n';
+            }
+
+            if (!oddRow) {
+                output += borderBottom;
+            }
+        } else {
+            var border = repeat(white).times(qrcode.getModuleCount() + 3);
+
+            output += border + '\n';
+            qrcode.modules.forEach(function (row) {
+                output += white;
+                output += row.map(toCell).join(''); 
+                output += white + '\n';
+            });
+            output += border;
+        }
+
+        if (cb) cb(output);
+        else console.log(output);
+    },
+
+    setErrorLevel: function (error) {
+        this.error = QRErrorCorrectLevel[error] || this.error;
+    }
+
+};
+
+
+/***/ }),
+
 /***/ 6311:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -32679,6 +33957,57 @@ function debounceTime(dueTime, scheduler) {
 }
 exports.debounceTime = debounceTime;
 //# sourceMappingURL=debounceTime.js.map
+
+/***/ }),
+
+/***/ 6543:
+/***/ ((module) => {
+
+var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+module.exports = QRMath;
+
 
 /***/ }),
 
@@ -37522,6 +38851,311 @@ if (process.env.READABLE_STREAM === 'disable' && Stream) {
 
 /***/ }),
 
+/***/ 7129:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var QRErrorCorrectLevel = __webpack_require__(543);
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+module.exports = QRRSBlock;
+
+
+/***/ }),
+
 /***/ 7145:
 /***/ ((module) => {
 
@@ -41465,6 +43099,504 @@ exports.executeSchedule = executeSchedule;
 
 /***/ }),
 
+/***/ 7735:
+/***/ ((__unused_webpack_module, exports) => {
+
+/**
+ * @otplib/core
+ *
+ * @author Gerald Yeo <contact@fusedthought.com>
+ * @version: 12.0.1
+ * @license: MIT
+ **/
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+function objectValues(value) {
+  return Object.keys(value).map(key => value[key]);
+}
+(function (HashAlgorithms) {
+  HashAlgorithms["SHA1"] = "sha1";
+  HashAlgorithms["SHA256"] = "sha256";
+  HashAlgorithms["SHA512"] = "sha512";
+})(exports.HashAlgorithms || (exports.HashAlgorithms = {}));
+const HASH_ALGORITHMS = objectValues(exports.HashAlgorithms);
+(function (KeyEncodings) {
+  KeyEncodings["ASCII"] = "ascii";
+  KeyEncodings["BASE64"] = "base64";
+  KeyEncodings["HEX"] = "hex";
+  KeyEncodings["LATIN1"] = "latin1";
+  KeyEncodings["UTF8"] = "utf8";
+})(exports.KeyEncodings || (exports.KeyEncodings = {}));
+const KEY_ENCODINGS = objectValues(exports.KeyEncodings);
+(function (Strategy) {
+  Strategy["HOTP"] = "hotp";
+  Strategy["TOTP"] = "totp";
+})(exports.Strategy || (exports.Strategy = {}));
+const STRATEGY = objectValues(exports.Strategy);
+const createDigestPlaceholder = () => {
+  throw new Error('Please provide an options.createDigest implementation.');
+};
+function isTokenValid(value) {
+  return /^(\d+)$/.test(value);
+}
+function padStart(value, maxLength, fillString) {
+  if (value.length >= maxLength) {
+    return value;
+  }
+  const padding = Array(maxLength + 1).join(fillString);
+  return `${padding}${value}`.slice(-1 * maxLength);
+}
+function keyuri(options) {
+  const tmpl = `otpauth://${options.type}/{labelPrefix}:{accountName}?secret={secret}{query}`;
+  const params = [];
+  if (STRATEGY.indexOf(options.type) < 0) {
+    throw new Error(`Expecting options.type to be one of ${STRATEGY.join(', ')}. Received ${options.type}.`);
+  }
+  if (options.type === 'hotp') {
+    if (options.counter == null || typeof options.counter !== 'number') {
+      throw new Error('Expecting options.counter to be a number when options.type is "hotp".');
+    }
+    params.push(`&counter=${options.counter}`);
+  }
+  if (options.type === 'totp' && options.step) {
+    params.push(`&period=${options.step}`);
+  }
+  if (options.digits) {
+    params.push(`&digits=${options.digits}`);
+  }
+  if (options.algorithm) {
+    params.push(`&algorithm=${options.algorithm.toUpperCase()}`);
+  }
+  if (options.issuer) {
+    params.push(`&issuer=${encodeURIComponent(options.issuer)}`);
+  }
+  return tmpl.replace('{labelPrefix}', encodeURIComponent(options.issuer || options.accountName)).replace('{accountName}', encodeURIComponent(options.accountName)).replace('{secret}', options.secret).replace('{query}', params.join(''));
+}
+class OTP {
+  constructor(defaultOptions = {}) {
+    this._defaultOptions = Object.freeze({ ...defaultOptions
+    });
+    this._options = Object.freeze({});
+  }
+  create(defaultOptions = {}) {
+    return new OTP(defaultOptions);
+  }
+  clone(defaultOptions = {}) {
+    const instance = this.create({ ...this._defaultOptions,
+      ...defaultOptions
+    });
+    instance.options = this._options;
+    return instance;
+  }
+  get options() {
+    return Object.freeze({ ...this._defaultOptions,
+      ...this._options
+    });
+  }
+  set options(options) {
+    this._options = Object.freeze({ ...this._options,
+      ...options
+    });
+  }
+  allOptions() {
+    return this.options;
+  }
+  resetOptions() {
+    this._options = Object.freeze({});
+  }
+}
+
+function hotpOptionsValidator(options) {
+  if (typeof options.createDigest !== 'function') {
+    throw new Error('Expecting options.createDigest to be a function.');
+  }
+  if (typeof options.createHmacKey !== 'function') {
+    throw new Error('Expecting options.createHmacKey to be a function.');
+  }
+  if (typeof options.digits !== 'number') {
+    throw new Error('Expecting options.digits to be a number.');
+  }
+  if (!options.algorithm || HASH_ALGORITHMS.indexOf(options.algorithm) < 0) {
+    throw new Error(`Expecting options.algorithm to be one of ${HASH_ALGORITHMS.join(', ')}. Received ${options.algorithm}.`);
+  }
+  if (!options.encoding || KEY_ENCODINGS.indexOf(options.encoding) < 0) {
+    throw new Error(`Expecting options.encoding to be one of ${KEY_ENCODINGS.join(', ')}. Received ${options.encoding}.`);
+  }
+}
+const hotpCreateHmacKey = (algorithm, secret, encoding) => {
+  return Buffer.from(secret, encoding).toString('hex');
+};
+function hotpDefaultOptions() {
+  const options = {
+    algorithm: exports.HashAlgorithms.SHA1,
+    createHmacKey: hotpCreateHmacKey,
+    createDigest: createDigestPlaceholder,
+    digits: 6,
+    encoding: exports.KeyEncodings.ASCII
+  };
+  return options;
+}
+function hotpOptions(opt) {
+  const options = { ...hotpDefaultOptions(),
+    ...opt
+  };
+  hotpOptionsValidator(options);
+  return Object.freeze(options);
+}
+function hotpCounter(counter) {
+  const hexCounter = counter.toString(16);
+  return padStart(hexCounter, 16, '0');
+}
+function hotpDigestToToken(hexDigest, digits) {
+  const digest = Buffer.from(hexDigest, 'hex');
+  const offset = digest[digest.length - 1] & 0xf;
+  const binary = (digest[offset] & 0x7f) << 24 | (digest[offset + 1] & 0xff) << 16 | (digest[offset + 2] & 0xff) << 8 | digest[offset + 3] & 0xff;
+  const token = binary % Math.pow(10, digits);
+  return padStart(String(token), digits, '0');
+}
+function hotpDigest(secret, counter, options) {
+  const hexCounter = hotpCounter(counter);
+  const hmacKey = options.createHmacKey(options.algorithm, secret, options.encoding);
+  return options.createDigest(options.algorithm, hmacKey, hexCounter);
+}
+function hotpToken(secret, counter, options) {
+  const hexDigest = options.digest || hotpDigest(secret, counter, options);
+  return hotpDigestToToken(hexDigest, options.digits);
+}
+function hotpCheck(token, secret, counter, options) {
+  if (!isTokenValid(token)) {
+    return false;
+  }
+  const systemToken = hotpToken(secret, counter, options);
+  return token === systemToken;
+}
+function hotpKeyuri(accountName, issuer, secret, counter, options) {
+  return keyuri({
+    algorithm: options.algorithm,
+    digits: options.digits,
+    type: exports.Strategy.HOTP,
+    accountName,
+    counter,
+    issuer,
+    secret
+  });
+}
+class HOTP extends OTP {
+  create(defaultOptions = {}) {
+    return new HOTP(defaultOptions);
+  }
+  allOptions() {
+    return hotpOptions(this.options);
+  }
+  generate(secret, counter) {
+    return hotpToken(secret, counter, this.allOptions());
+  }
+  check(token, secret, counter) {
+    return hotpCheck(token, secret, counter, this.allOptions());
+  }
+  verify(opts) {
+    if (typeof opts !== 'object') {
+      throw new Error('Expecting argument 0 of verify to be an object');
+    }
+    return this.check(opts.token, opts.secret, opts.counter);
+  }
+  keyuri(accountName, issuer, secret, counter) {
+    return hotpKeyuri(accountName, issuer, secret, counter, this.allOptions());
+  }
+}
+
+function parseWindowBounds(win) {
+  if (typeof win === 'number') {
+    return [Math.abs(win), Math.abs(win)];
+  }
+  if (Array.isArray(win)) {
+    const [past, future] = win;
+    if (typeof past === 'number' && typeof future === 'number') {
+      return [Math.abs(past), Math.abs(future)];
+    }
+  }
+  throw new Error('Expecting options.window to be an number or [number, number].');
+}
+function totpOptionsValidator(options) {
+  hotpOptionsValidator(options);
+  parseWindowBounds(options.window);
+  if (typeof options.epoch !== 'number') {
+    throw new Error('Expecting options.epoch to be a number.');
+  }
+  if (typeof options.step !== 'number') {
+    throw new Error('Expecting options.step to be a number.');
+  }
+}
+const totpPadSecret = (secret, encoding, minLength) => {
+  const currentLength = secret.length;
+  const hexSecret = Buffer.from(secret, encoding).toString('hex');
+  if (currentLength < minLength) {
+    const newSecret = new Array(minLength - currentLength + 1).join(hexSecret);
+    return Buffer.from(newSecret, 'hex').slice(0, minLength).toString('hex');
+  }
+  return hexSecret;
+};
+const totpCreateHmacKey = (algorithm, secret, encoding) => {
+  switch (algorithm) {
+    case exports.HashAlgorithms.SHA1:
+      return totpPadSecret(secret, encoding, 20);
+    case exports.HashAlgorithms.SHA256:
+      return totpPadSecret(secret, encoding, 32);
+    case exports.HashAlgorithms.SHA512:
+      return totpPadSecret(secret, encoding, 64);
+    default:
+      throw new Error(`Expecting algorithm to be one of ${HASH_ALGORITHMS.join(', ')}. Received ${algorithm}.`);
+  }
+};
+function totpDefaultOptions() {
+  const options = {
+    algorithm: exports.HashAlgorithms.SHA1,
+    createDigest: createDigestPlaceholder,
+    createHmacKey: totpCreateHmacKey,
+    digits: 6,
+    encoding: exports.KeyEncodings.ASCII,
+    epoch: Date.now(),
+    step: 30,
+    window: 0
+  };
+  return options;
+}
+function totpOptions(opt) {
+  const options = { ...totpDefaultOptions(),
+    ...opt
+  };
+  totpOptionsValidator(options);
+  return Object.freeze(options);
+}
+function totpCounter(epoch, step) {
+  return Math.floor(epoch / step / 1000);
+}
+function totpToken(secret, options) {
+  const counter = totpCounter(options.epoch, options.step);
+  return hotpToken(secret, counter, options);
+}
+function totpEpochsInWindow(epoch, direction, deltaPerEpoch, numOfEpoches) {
+  const result = [];
+  if (numOfEpoches === 0) {
+    return result;
+  }
+  for (let i = 1; i <= numOfEpoches; i++) {
+    const delta = direction * i * deltaPerEpoch;
+    result.push(epoch + delta);
+  }
+  return result;
+}
+function totpEpochAvailable(epoch, step, win) {
+  const bounds = parseWindowBounds(win);
+  const delta = step * 1000;
+  return {
+    current: epoch,
+    past: totpEpochsInWindow(epoch, -1, delta, bounds[0]),
+    future: totpEpochsInWindow(epoch, 1, delta, bounds[1])
+  };
+}
+function totpCheck(token, secret, options) {
+  if (!isTokenValid(token)) {
+    return false;
+  }
+  const systemToken = totpToken(secret, options);
+  return token === systemToken;
+}
+function totpCheckByEpoch(epochs, token, secret, options) {
+  let position = null;
+  epochs.some((epoch, idx) => {
+    if (totpCheck(token, secret, { ...options,
+      epoch
+    })) {
+      position = idx + 1;
+      return true;
+    }
+    return false;
+  });
+  return position;
+}
+function totpCheckWithWindow(token, secret, options) {
+  if (totpCheck(token, secret, options)) {
+    return 0;
+  }
+  const epochs = totpEpochAvailable(options.epoch, options.step, options.window);
+  const backward = totpCheckByEpoch(epochs.past, token, secret, options);
+  if (backward !== null) {
+    return backward * -1;
+  }
+  return totpCheckByEpoch(epochs.future, token, secret, options);
+}
+function totpTimeUsed(epoch, step) {
+  return Math.floor(epoch / 1000) % step;
+}
+function totpTimeRemaining(epoch, step) {
+  return step - totpTimeUsed(epoch, step);
+}
+function totpKeyuri(accountName, issuer, secret, options) {
+  return keyuri({
+    algorithm: options.algorithm,
+    digits: options.digits,
+    step: options.step,
+    type: exports.Strategy.TOTP,
+    accountName,
+    issuer,
+    secret
+  });
+}
+class TOTP extends HOTP {
+  create(defaultOptions = {}) {
+    return new TOTP(defaultOptions);
+  }
+  allOptions() {
+    return totpOptions(this.options);
+  }
+  generate(secret) {
+    return totpToken(secret, this.allOptions());
+  }
+  checkDelta(token, secret) {
+    return totpCheckWithWindow(token, secret, this.allOptions());
+  }
+  check(token, secret) {
+    const delta = this.checkDelta(token, secret);
+    return typeof delta === 'number';
+  }
+  verify(opts) {
+    if (typeof opts !== 'object') {
+      throw new Error('Expecting argument 0 of verify to be an object');
+    }
+    return this.check(opts.token, opts.secret);
+  }
+  timeRemaining() {
+    const options = this.allOptions();
+    return totpTimeRemaining(options.epoch, options.step);
+  }
+  timeUsed() {
+    const options = this.allOptions();
+    return totpTimeUsed(options.epoch, options.step);
+  }
+  keyuri(accountName, issuer, secret) {
+    return totpKeyuri(accountName, issuer, secret, this.allOptions());
+  }
+}
+
+function authenticatorOptionValidator(options) {
+  totpOptionsValidator(options);
+  if (typeof options.keyDecoder !== 'function') {
+    throw new Error('Expecting options.keyDecoder to be a function.');
+  }
+  if (options.keyEncoder && typeof options.keyEncoder !== 'function') {
+    throw new Error('Expecting options.keyEncoder to be a function.');
+  }
+}
+function authenticatorDefaultOptions() {
+  const options = {
+    algorithm: exports.HashAlgorithms.SHA1,
+    createDigest: createDigestPlaceholder,
+    createHmacKey: totpCreateHmacKey,
+    digits: 6,
+    encoding: exports.KeyEncodings.HEX,
+    epoch: Date.now(),
+    step: 30,
+    window: 0
+  };
+  return options;
+}
+function authenticatorOptions(opt) {
+  const options = { ...authenticatorDefaultOptions(),
+    ...opt
+  };
+  authenticatorOptionValidator(options);
+  return Object.freeze(options);
+}
+function authenticatorEncoder(secret, options) {
+  return options.keyEncoder(secret, options.encoding);
+}
+function authenticatorDecoder(secret, options) {
+  return options.keyDecoder(secret, options.encoding);
+}
+function authenticatorGenerateSecret(numberOfBytes, options) {
+  const key = options.createRandomBytes(numberOfBytes, options.encoding);
+  return authenticatorEncoder(key, options);
+}
+function authenticatorToken(secret, options) {
+  return totpToken(authenticatorDecoder(secret, options), options);
+}
+function authenticatorCheckWithWindow(token, secret, options) {
+  return totpCheckWithWindow(token, authenticatorDecoder(secret, options), options);
+}
+class Authenticator extends TOTP {
+  create(defaultOptions = {}) {
+    return new Authenticator(defaultOptions);
+  }
+  allOptions() {
+    return authenticatorOptions(this.options);
+  }
+  generate(secret) {
+    return authenticatorToken(secret, this.allOptions());
+  }
+  checkDelta(token, secret) {
+    return authenticatorCheckWithWindow(token, secret, this.allOptions());
+  }
+  encode(secret) {
+    return authenticatorEncoder(secret, this.allOptions());
+  }
+  decode(secret) {
+    return authenticatorDecoder(secret, this.allOptions());
+  }
+  generateSecret(numberOfBytes = 10) {
+    return authenticatorGenerateSecret(numberOfBytes, this.allOptions());
+  }
+}
+
+exports.Authenticator = Authenticator;
+exports.HASH_ALGORITHMS = HASH_ALGORITHMS;
+exports.HOTP = HOTP;
+exports.KEY_ENCODINGS = KEY_ENCODINGS;
+exports.OTP = OTP;
+exports.STRATEGY = STRATEGY;
+exports.TOTP = TOTP;
+exports.authenticatorCheckWithWindow = authenticatorCheckWithWindow;
+exports.authenticatorDecoder = authenticatorDecoder;
+exports.authenticatorDefaultOptions = authenticatorDefaultOptions;
+exports.authenticatorEncoder = authenticatorEncoder;
+exports.authenticatorGenerateSecret = authenticatorGenerateSecret;
+exports.authenticatorOptionValidator = authenticatorOptionValidator;
+exports.authenticatorOptions = authenticatorOptions;
+exports.authenticatorToken = authenticatorToken;
+exports.createDigestPlaceholder = createDigestPlaceholder;
+exports.hotpCheck = hotpCheck;
+exports.hotpCounter = hotpCounter;
+exports.hotpCreateHmacKey = hotpCreateHmacKey;
+exports.hotpDefaultOptions = hotpDefaultOptions;
+exports.hotpDigestToToken = hotpDigestToToken;
+exports.hotpKeyuri = hotpKeyuri;
+exports.hotpOptions = hotpOptions;
+exports.hotpOptionsValidator = hotpOptionsValidator;
+exports.hotpToken = hotpToken;
+exports.isTokenValid = isTokenValid;
+exports.keyuri = keyuri;
+exports.objectValues = objectValues;
+exports.padStart = padStart;
+exports.totpCheck = totpCheck;
+exports.totpCheckByEpoch = totpCheckByEpoch;
+exports.totpCheckWithWindow = totpCheckWithWindow;
+exports.totpCounter = totpCounter;
+exports.totpCreateHmacKey = totpCreateHmacKey;
+exports.totpDefaultOptions = totpDefaultOptions;
+exports.totpEpochAvailable = totpEpochAvailable;
+exports.totpKeyuri = totpKeyuri;
+exports.totpOptions = totpOptions;
+exports.totpOptionsValidator = totpOptionsValidator;
+exports.totpPadSecret = totpPadSecret;
+exports.totpTimeRemaining = totpTimeRemaining;
+exports.totpTimeUsed = totpTimeUsed;
+exports.totpToken = totpToken;
+
+
+/***/ }),
+
 /***/ 7739:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -42062,6 +44194,44 @@ function exhaustAll() {
 }
 exports.exhaustAll = exhaustAll;
 //# sourceMappingURL=exhaustAll.js.map
+
+/***/ }),
+
+/***/ 8095:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+/**
+ * @otplib/preset-default
+ *
+ * @author Gerald Yeo <contact@fusedthought.com>
+ * @version: 12.0.1
+ * @license: MIT
+ **/
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+var pluginCrypto = __webpack_require__(279);
+var pluginThirtyTwo = __webpack_require__(3523);
+var core = __webpack_require__(7735);
+
+const hotp = new core.HOTP({
+  createDigest: pluginCrypto.createDigest
+});
+const totp = new core.TOTP({
+  createDigest: pluginCrypto.createDigest
+});
+const authenticator = new core.Authenticator({
+  createDigest: pluginCrypto.createDigest,
+  createRandomBytes: pluginCrypto.createRandomBytes,
+  keyDecoder: pluginThirtyTwo.keyDecoder,
+  keyEncoder: pluginThirtyTwo.keyEncoder
+});
+
+exports.authenticator = authenticator;
+exports.hotp = hotp;
+exports.totp = totp;
+
 
 /***/ }),
 
@@ -44556,6 +46726,23 @@ function isPOJO(obj) {
     return obj && typeof obj === 'object' && getPrototypeOf(obj) === objectProto;
 }
 //# sourceMappingURL=argsArgArrayOrObject.js.map
+
+/***/ }),
+
+/***/ 9207:
+/***/ ((module) => {
+
+module.exports = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
 
 /***/ }),
 
@@ -47933,6 +50120,19 @@ function bufferTime(bufferTimeSpan) {
 }
 exports.bufferTime = bufferTime;
 //# sourceMappingURL=bufferTime.js.map
+
+/***/ }),
+
+/***/ 9802:
+/***/ ((module) => {
+
+module.exports = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
+
 
 /***/ }),
 
@@ -62172,6 +64372,7 @@ function showCacheHelp() {
     };
     (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
 }
+const CLI_CACHE_DIR = '.package-installer-cli';
 /**
  * Main cache command function
  */
@@ -62236,7 +64437,7 @@ async function cacheCommand(subcommand, type, options = {}) {
             console.log(source/* default */.Ay.gray(`   Cached Projects: ${stats.projects?.length || 0}`));
             console.log(source/* default */.Ay.gray(`   Template Files: ${stats.templateFiles?.size || Object.keys(stats.templateFiles || {}).length || 0}`));
             // Show cache size
-            const cacheDir = external_path_.join(external_os_.homedir(), '.pi-cache');
+            const cacheDir = external_path_.join(external_os_.homedir(), CLI_CACHE_DIR);
             if (await fs_extra_lib.pathExists(cacheDir)) {
                 const size = await (0,utils_cacheManager/* getDirectorySize */.fC)(cacheDir);
                 console.log(source/* default */.Ay.gray(`   Cache Size: ${(size / 1024 / 1024).toFixed(2)} MB`));
@@ -62271,7 +64472,7 @@ async function cacheStatsCommand() {
         const hitRatio = totalRequests > 0 ? ((stats.hits || 0) / totalRequests * 100).toFixed(1) : '0';
         console.log(source/* default */.Ay.gray(`   Hit Ratio: ${hitRatio}%`));
         // Storage information
-        const cacheDir = external_path_.join(external_os_.homedir(), '.pi-cache');
+        const cacheDir = external_path_.join(external_os_.homedir(), CLI_CACHE_DIR);
         if (await fs_extra_lib.pathExists(cacheDir)) {
             const size = await (0,utils_cacheManager/* getDirectorySize */.fC)(cacheDir);
             console.log(source/* default */.Ay.gray(`   Cache Size: ${(size / 1024 / 1024).toFixed(2)} MB`));
@@ -62290,7 +64491,7 @@ async function cacheClearCommand(type) {
     console.log((0,dist/* default */.Ay)(['#00d2d3', '#0084ff'])('\n🗑️  Cache Cleaner\n'));
     const spinner = (0,node_modules_ora/* default */.Ay)('Clearing cache...').start();
     try {
-        const cacheDir = external_path_.join(external_os_.homedir(), '.pi-cache');
+        const cacheDir = external_path_.join(external_os_.homedir(), CLI_CACHE_DIR);
         if (type) {
             // Clear specific cache type
             const cacheFile = external_path_.join(cacheDir, 'cache.json');
@@ -62342,21 +64543,17 @@ async function cacheClearCommand(type) {
  */
 async function cacheInfoCommand() {
     console.log((0,dist/* default */.Ay)(['#00d2d3', '#0084ff'])('\n🔧 Cache Configuration\n'));
-    const os = require('os');
-    const path = require('path');
-    const cacheDir = path.join(os.homedir(), '.pi-cache');
-    const cacheFile = path.join(cacheDir, 'cache.json');
+    const cacheDir = external_path_.join(external_os_.homedir(), CLI_CACHE_DIR);
+    const cacheFile = external_path_.join(cacheDir, 'cache.json');
     console.log(source/* default */.Ay.cyan('Cache Configuration:'));
     console.log(source/* default */.Ay.gray(`   Cache Directory: ${cacheDir}`));
     console.log(source/* default */.Ay.gray(`   Cache File: ${cacheFile}`));
-    console.log(source/* default */.Ay.gray(`   Cache Version: 1.0.0`));
-    // Check if cache file exists
-    const fs = require('fs-extra');
-    const exists = await fs.pathExists(cacheFile);
+    console.log(source/* default */.Ay.gray(`   Cache Version: 3.11.2`));
+    const exists = await fs_extra_lib.pathExists(cacheFile);
     console.log(source/* default */.Ay.gray(`   Cache File Exists: ${exists ? 'Yes' : 'No'}`));
     if (exists) {
         try {
-            const stats = await fs.stat(cacheFile);
+            const stats = await fs_extra_lib.stat(cacheFile);
             const size = (stats.size / 1024).toFixed(2);
             const modified = stats.mtime.toLocaleString();
             console.log(source/* default */.Ay.gray(`   File Size: ${size} KB`));
@@ -62381,7 +64578,7 @@ async function cacheSizeCommand() {
     console.log((0,dist/* default */.Ay)(['#00d2d3', '#0084ff'])('\n📊 Cache Size Information\n'));
     const spinner = (0,node_modules_ora/* default */.Ay)('Calculating cache size...').start();
     try {
-        const cacheDir = external_path_.join(external_os_.homedir(), '.pi-cache');
+        const cacheDir = external_path_.join(external_os_.homedir(), CLI_CACHE_DIR);
         if (!await fs_extra_lib.pathExists(cacheDir)) {
             spinner.warn('Cache directory not found');
             console.log(source/* default */.Ay.yellow('⚠️  Cache has not been initialized yet'));
@@ -62421,7 +64618,7 @@ async function cacheOptimizeCommand() {
     console.log((0,dist/* default */.Ay)(['#00d2d3', '#0084ff'])('\n⚡ Cache Optimizer\n'));
     const spinner = (0,node_modules_ora/* default */.Ay)('Optimizing cache...').start();
     try {
-        const cacheDir = external_path_.join(external_os_.homedir(), '.pi-cache');
+        const cacheDir = external_path_.join(external_os_.homedir(), CLI_CACHE_DIR);
         const cacheFile = external_path_.join(cacheDir, 'cache.json');
         if (!await fs_extra_lib.pathExists(cacheFile)) {
             spinner.warn('Cache file not found');
@@ -62538,16 +64735,13 @@ function checkDevelopmentTools() {
     const tools = [
         { name: 'Node.js', command: 'node', flag: '--version' },
         { name: 'npm', command: 'npm', flag: '--version' },
-        { name: 'yarn', command: 'yarn', flag: '--version' },
         { name: 'pnpm', command: 'pnpm', flag: '--version' },
         { name: 'Git', command: 'git', flag: '--version' },
         { name: 'Docker', command: 'docker', flag: '--version' },
         { name: 'Python', command: 'python3', flag: '--version' },
         { name: 'Rust', command: 'rustc', flag: '--version' },
         { name: 'Go', command: 'go', flag: 'version' },
-        { name: 'PHP', command: 'php', flag: '--version' },
         { name: 'Ruby', command: 'ruby', flag: '--version' },
-        { name: 'Java', command: 'java', flag: '--version' },
         { name: 'VS Code', command: 'code', flag: '--version' }
     ];
     return tools.map(tool => ({
@@ -62632,7 +64826,7 @@ STRIPE_SECRET_KEY=sk_test_...
 STRIPE_PUBLISHABLE_KEY=pk_test_...
 `;
         await fs_extra_lib.writeFile(envPath, envContent);
-        console.log(source/* default */.Ay.green(`✅ Generated .env.example template at ${envPath}`));
+        console.log(source/* default */.Ay.green(`✅ Generated .env template at ${envPath}`));
     }
     catch (error) {
         console.error(source/* default */.Ay.red('❌ Failed to generate .env template:'), error);
@@ -66758,6 +68952,551 @@ async function emailCommand(category, options = {}) {
     }
 }
 
+// EXTERNAL MODULE: external "crypto"
+var external_crypto_ = __webpack_require__(6982);
+;// ./dist/utils/authStore.js
+
+
+
+
+class AuthStore {
+    constructor() {
+        this.records = [];
+        this.failedAttempts = {};
+        this.dir = external_path_.join(external_os_.homedir(), '.package-installer-cli');
+        this.file = external_path_.join(this.dir, 'auth.json');
+        this.sessionFile = external_path_.join(this.dir, 'session.json');
+    }
+    async init() {
+        await fs_extra_lib.ensureDir(this.dir);
+        // Restrict directory permissions to user only
+        try {
+            await fs_extra_lib.chmod(this.dir, 0o700);
+        }
+        catch { }
+        if (await fs_extra_lib.pathExists(this.file)) {
+            try {
+                const data = await fs_extra_lib.readJson(this.file);
+                this.records = Array.isArray(data) ? data : [];
+            }
+            catch {
+                this.records = [];
+            }
+        }
+    }
+    async save() {
+        await fs_extra_lib.writeJson(this.file, this.records, { spaces: 2 });
+        // Restrict file permissions to user only
+        try {
+            await fs_extra_lib.chmod(this.file, 0o600);
+        }
+        catch { }
+    }
+    hashPassword(password, salt) {
+        // Use scrypt for password hashing (built-in, fast and secure)
+        return external_crypto_.scryptSync(password, salt, 64);
+    }
+    async createUser(email, password) {
+        const existing = this.records.find(r => r.email === email.toLowerCase());
+        if (existing)
+            throw new Error('User already exists');
+        // Basic validation
+        const normalizedEmail = email.trim().toLowerCase();
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(normalizedEmail)) {
+            throw new Error('Invalid email address');
+        }
+        if (password.length < 8) {
+            throw new Error('Password must be at least 8 characters long');
+        }
+        const salt = external_crypto_.randomBytes(16);
+        const hash = this.hashPassword(password, salt);
+        const record = {
+            email: email.toLowerCase(),
+            salt: salt.toString('hex'),
+            hash: hash.toString('hex'),
+            createdAt: new Date().toISOString(),
+            usageCount: 0,
+            usageLimit: 3,
+        };
+        this.records.push(record);
+        await this.save();
+        return record;
+    }
+    // Increment usage for unverified user, return true if allowed, false if over limit
+    async incrementUsage(email) {
+        const rec = this.records.find(r => r.email === email.toLowerCase());
+        if (!rec)
+            throw new Error('User not found');
+        if (rec.verified)
+            return true; // No limit for verified
+        if (typeof rec.usageCount !== 'number')
+            rec.usageCount = 0;
+        if (typeof rec.usageLimit !== 'number')
+            rec.usageLimit = 3;
+        if (rec.usageCount >= rec.usageLimit)
+            return false;
+        rec.usageCount += 1;
+        await this.save();
+        return true;
+    }
+    // Reset usage when user is verified
+    async verifyUser(email, password) {
+        const record = this.records.find(r => r.email === email.toLowerCase());
+        if (!record)
+            return false;
+        // Simple rate limiting/backoff
+        const key = email.toLowerCase();
+        const now = Date.now();
+        const entry = this.failedAttempts[key];
+        if (entry && entry.count >= 5 && now - entry.lastAttempt < 60_000) {
+            // Lockout for 60s after 5 failed attempts
+            throw new Error('Too many failed attempts. Try again later.');
+        }
+        const salt = Buffer.from(record.salt, 'hex');
+        const hash = this.hashPassword(password, salt);
+        const stored = Buffer.from(record.hash, 'hex');
+        // Use timingSafeEqual to avoid timing attacks
+        if (stored.length !== hash.length)
+            return false;
+        const ok = external_crypto_.timingSafeEqual(stored, hash);
+        if (!ok) {
+            // record failed attempt
+            if (!this.failedAttempts[key])
+                this.failedAttempts[key] = { count: 0, lastAttempt: now };
+            this.failedAttempts[key].count += 1;
+            this.failedAttempts[key].lastAttempt = now;
+        }
+        else {
+            // reset on success
+            delete this.failedAttempts[key];
+        }
+        return ok;
+    }
+    async login(email, password) {
+        const ok = await this.verifyUser(email, password);
+        if (!ok)
+            return false;
+        await fs_extra_lib.writeJson(this.sessionFile, { email: email.toLowerCase(), loggedAt: new Date().toISOString() }, { spaces: 2 });
+        return true;
+    }
+    async logout() {
+        if (await fs_extra_lib.pathExists(this.sessionFile)) {
+            await fs_extra_lib.remove(this.sessionFile);
+        }
+    }
+    async getSession() {
+        if (!(await fs_extra_lib.pathExists(this.sessionFile)))
+            return null;
+        try {
+            const data = await fs_extra_lib.readJson(this.sessionFile);
+            return { email: (data.email || '').toLowerCase() };
+        }
+        catch {
+            return null;
+        }
+    }
+    async isLoggedIn() {
+        const s = await this.getSession();
+        return !!s?.email;
+    }
+    async getUsers() {
+        return this.records.slice();
+    }
+    async setTotpSecret(email, secret) {
+        const rec = this.records.find(r => r.email === email.toLowerCase());
+        if (!rec)
+            throw new Error('User not found');
+        rec.totpSecret = secret;
+        await this.save();
+    }
+    async setVerified(email, verified) {
+        const rec = this.records.find(r => r.email === email.toLowerCase());
+        if (!rec)
+            throw new Error('User not found');
+        rec.verified = verified;
+        if (verified) {
+            rec.usageCount = undefined;
+            rec.usageLimit = undefined;
+        }
+        await this.save();
+    }
+    async getTotpSecret(email) {
+        const rec = this.records.find(r => r.email === email.toLowerCase());
+        return rec?.totpSecret;
+    }
+    async isVerified(email) {
+        const rec = this.records.find(r => r.email === email.toLowerCase());
+        return !!rec?.verified;
+    }
+}
+const authStore_authStore = new AuthStore();
+async function initAuthStore() {
+    await authStore_authStore.init();
+}
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/otplib@12.0.1/node_modules/otplib/index.js
+var otplib = __webpack_require__(4283);
+// EXTERNAL MODULE: ./node_modules/.pnpm/qrcode-terminal@0.12.0/node_modules/qrcode-terminal/lib/main.js
+var main = __webpack_require__(6273);
+;// ./dist/commands/auth.js
+
+
+
+
+
+
+async function setupTotp(email) {
+    // Generate TOTP secret
+    const secret = otplib.authenticator.generateSecret();
+    const otpauth = otplib.authenticator.keyuri(email, 'PackageInstallerCLI', secret);
+    // Show QR code in terminal
+    console.log(source/* default */.Ay.cyan('\nScan this QR code with Google Authenticator or a compatible app:'));
+    main.generate(otpauth, { small: true });
+    console.log(source/* default */.Ay.gray(`If you can't scan, use this secret: ${source/* default */.Ay.yellow(secret)}`));
+    return secret;
+}
+async function verifyTotpPrompt(secret) {
+    for (let i = 0; i < 3; ++i) {
+        const { code } = await lib["default"].prompt([
+            { name: 'code', message: 'Enter 6-digit code from your Authenticator app:', type: 'input', validate: (v) => /^\d{6}$/.test(v) || 'Enter a 6-digit code' }
+        ]);
+        if (otplib.authenticator.check(code, secret))
+            return true;
+        console.log(source/* default */.Ay.red('❌ Invalid code. Try again.'));
+    }
+    return false;
+}
+// Add a function for 2FA setup and verification (used in both register and verify)
+async function setupAndVerifyTotp(email) {
+    const secret = await setupTotp(email);
+    await authStore_authStore.setTotpSecret(email, secret);
+    const verified = await verifyTotpPrompt(secret);
+    if (!verified) {
+        console.log(source/* default */.Ay.red('❌ Verification failed. 2FA not enabled.'));
+        return false;
+    }
+    await authStore_authStore.setVerified(email, true);
+    console.log(source/* default */.Ay.green('✅ 2FA enabled and verified!'));
+    return true;
+}
+// Patch interactiveRegister to make 2FA optional
+async function interactiveRegister() {
+    const { email, password, confirm } = await lib["default"].prompt([
+        { name: 'email', message: 'Email:', type: 'input', validate: (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) || 'Enter a valid email' },
+        { name: 'password', message: 'Password (min 8 chars):', type: 'password', mask: '*', validate: (v) => v.length >= 8 || 'Password must be at least 8 characters' },
+        { name: 'confirm', message: 'Confirm Password:', type: 'password', mask: '*' },
+    ]);
+    if (password !== confirm) {
+        console.log(source/* default */.Ay.red('Passwords do not match'));
+        return;
+    }
+    let created = false;
+    try {
+        await authStore_authStore.createUser(email, password);
+        created = true;
+    }
+    catch (err) {
+        if (err.message && err.message.includes('already exists')) {
+            console.log(source/* default */.Ay.red('❌ User already exists. Please login or use a different email.'));
+            return;
+        }
+        console.log(source/* default */.Ay.red('❌'), err.message || String(err));
+        return;
+    }
+    // Suggest 2FA setup
+    const { enable2fa } = await lib["default"].prompt([
+        { name: 'enable2fa', type: 'confirm', message: 'Would you like to enable 2FA (recommended)?', default: true }
+    ]);
+    if (enable2fa) {
+        await setupAndVerifyTotp(email);
+    }
+    else {
+        console.log(source/* default */.Ay.yellow('⚠️  2FA is not enabled. You can enable it anytime with: pi auth verify'));
+    }
+    // Always auto-login after registration if user was created
+    if (created) {
+        const ok = await authStore_authStore.login(email, password);
+        if (ok) {
+            console.log(source/* default */.Ay.green('✅ User registered and logged in.'));
+        }
+        else {
+            console.log(source/* default */.Ay.yellow('User registered, but auto-login failed. Please login manually.'));
+        }
+    }
+}
+async function interactiveLogin() {
+    const responses = await inquirer.prompt([
+        { name: 'email', message: 'Email:', type: 'input', validate: (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) || 'Enter a valid email' },
+        { name: 'password', message: 'Password:', type: 'password', mask: '*', validate: (v) => v.length >= 8 || 'Password must be at least 8 characters' },
+    ]);
+    const { email, password } = responses;
+    try {
+        const ok = await authStore.login(email, password);
+        if (!ok) {
+            console.log(chalk.red('❌ Invalid email or password'));
+            return;
+        }
+        // Check verification
+        const secret = await authStore.getTotpSecret(email);
+        const isVerified = await authStore.isVerified(email);
+        if (!secret) {
+            console.log(chalk.red('❌ This account does not have 2FA set up. Please register again.'));
+            await authStore.logout();
+            return;
+        }
+        if (!isVerified) {
+            console.log(chalk.red('❌ This account is not verified. Please complete TOTP verification during registration.'));
+            await authStore.logout();
+            return;
+        }
+        // Prompt for TOTP code
+        const { code } = await inquirer.prompt([
+            { name: 'code', message: 'Enter 6-digit code from your Authenticator app:', type: 'input', validate: (v) => /^\d{6}$/.test(v) || 'Enter a 6-digit code' }
+        ]);
+        if (!authenticator.check(code, secret)) {
+            console.log(chalk.red('❌ Invalid code. Login aborted.'));
+            await authStore.logout();
+            return;
+        }
+        console.log(chalk.green('✅ Logged in successfully'));
+    }
+    catch (err) {
+        if (err.message && err.message.includes('already exists')) {
+            console.log(chalk.red('❌ User already exists. Please login or use a different email.'));
+            return;
+        }
+        console.log(chalk.red('❌'), err.message || String(err));
+    }
+}
+async function handleAuthOptions(subcommand, value, opts = {}) {
+    await initAuthStore();
+    // Help flag or no subcommand: show help
+    if (opts.help || opts['--help'] || opts['-h'] || subcommand === '--help' || subcommand === '-h' || !subcommand) {
+        showAuthHelp();
+        return;
+    }
+    try {
+        // Normalize subcommand for robust matching
+        const cmd = (subcommand || '').toLowerCase();
+        switch (cmd) {
+            case 'login': {
+                if (opts.email && opts.password) {
+                    try {
+                        const ok = await authStore_authStore.login(opts.email, opts.password);
+                        if (!ok) {
+                            console.log(source/* default */.Ay.red('❌ Invalid email or password'));
+                            return;
+                        }
+                        // Check verification
+                        const secret = await authStore_authStore.getTotpSecret(opts.email);
+                        const isVerified = await authStore_authStore.isVerified(opts.email);
+                        if (!secret) {
+                            console.log(source/* default */.Ay.red('❌ This account does not have 2FA set up. Please register again.'));
+                            await authStore_authStore.logout();
+                            return;
+                        }
+                        if (!isVerified) {
+                            console.log(source/* default */.Ay.red('❌ This account is not verified. Please complete TOTP verification during registration.'));
+                            await authStore_authStore.logout();
+                            return;
+                        }
+                        // Prompt for TOTP code
+                        const { code } = await lib["default"].prompt([
+                            { name: 'code', message: 'Enter 6-digit code from your Authenticator app:', type: 'input', validate: (v) => /^\d{6}$/.test(v) || 'Enter a 6-digit code' }
+                        ]);
+                        if (!otplib.authenticator.check(code, secret)) {
+                            console.log(source/* default */.Ay.red('❌ Invalid code. Login aborted.'));
+                            await authStore_authStore.logout();
+                            return;
+                        }
+                        console.log(source/* default */.Ay.green('✅ Logged in successfully'));
+                    }
+                    catch (err) {
+                        if (err.message && err.message.includes('already exists')) {
+                            console.log(source/* default */.Ay.red('❌ User already exists. Please login or use a different email.'));
+                            return;
+                        }
+                        console.log(source/* default */.Ay.red('❌'), err.message || String(err));
+                    }
+                }
+                else {
+                    // Interactive login
+                    const responses = await lib["default"].prompt([
+                        { name: 'email', message: 'Email:', type: 'input', validate: (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) || 'Enter a valid email' },
+                        { name: 'password', message: 'Password:', type: 'password', mask: '*', validate: (v) => v.length >= 8 || 'Password must be at least 8 characters' },
+                    ]);
+                    const { email, password } = responses;
+                    const ok = await authStore_authStore.login(email, password);
+                    if (!ok) {
+                        console.log(source/* default */.Ay.red('❌ Invalid email or password'));
+                        return;
+                    }
+                    const secret = await authStore_authStore.getTotpSecret(email);
+                    const isVerified = await authStore_authStore.isVerified(email);
+                    if (!secret) {
+                        console.log(source/* default */.Ay.red('❌ This account does not have 2FA set up. Please register again.'));
+                        await authStore_authStore.logout();
+                        return;
+                    }
+                    if (!isVerified) {
+                        console.log(source/* default */.Ay.red('❌ This account is not verified. Please complete TOTP verification during registration.'));
+                        await authStore_authStore.logout();
+                        return;
+                    }
+                    const { code } = await lib["default"].prompt([
+                        { name: 'code', message: 'Enter 6-digit code from your Authenticator app:', type: 'input', validate: (v) => /^\d{6}$/.test(v) || 'Enter a 6-digit code' }
+                    ]);
+                    if (!otplib.authenticator.check(code, secret)) {
+                        console.log(source/* default */.Ay.red('❌ Invalid code. Login aborted.'));
+                        await authStore_authStore.logout();
+                        return;
+                    }
+                    console.log(source/* default */.Ay.green('✅ Logged in successfully'));
+                }
+                return;
+            }
+            case 'register': {
+                if (opts.email && opts.password) {
+                    try {
+                        await authStore_authStore.createUser(opts.email, opts.password);
+                        // TOTP setup
+                        const secret = await setupTotp(opts.email);
+                        await authStore_authStore.setTotpSecret(opts.email, secret);
+                        const verified = await verifyTotpPrompt(secret);
+                        if (!verified) {
+                            console.log(source/* default */.Ay.red('❌ Verification failed. Registration incomplete.'));
+                            return;
+                        }
+                        await authStore_authStore.setVerified(opts.email, true);
+                        // Auto-login after registration
+                        const ok = await authStore_authStore.login(opts.email, opts.password);
+                        if (ok) {
+                            console.log(source/* default */.Ay.green('✅ User registered, verified, and logged in.'));
+                        }
+                        else {
+                            console.log(source/* default */.Ay.yellow('User registered and verified, but auto-login failed. Please login manually.'));
+                        }
+                    }
+                    catch (err) {
+                        console.log(source/* default */.Ay.red('❌'), err.message || String(err));
+                    }
+                }
+                else {
+                    await interactiveRegister();
+                }
+                return;
+            }
+            case 'verify': {
+                // Get current session or prompt for email
+                let email = opts.email;
+                if (!email) {
+                    const session = await authStore_authStore.getSession();
+                    if (session && session.email) {
+                        email = session.email;
+                    }
+                    else {
+                        const resp = await lib["default"].prompt([
+                            { name: 'email', message: 'Email to verify:', type: 'input', validate: (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) || 'Enter a valid email' }
+                        ]);
+                        email = resp.email;
+                    }
+                }
+                // Check if user exists
+                const users = await authStore_authStore.getUsers();
+                const user = users.find(u => u.email === email.toLowerCase());
+                if (!user) {
+                    console.log(source/* default */.Ay.red('❌ User not found. Please register first.'));
+                    return;
+                }
+                // If already verified, skip
+                if (user.verified) {
+                    console.log(source/* default */.Ay.green('✅ 2FA is already enabled for this user.'));
+                    return;
+                }
+                await setupAndVerifyTotp(email);
+                return;
+            }
+            case 'logout': {
+                await authStore_authStore.logout();
+                console.log(source/* default */.Ay.green('✅ Logged out'));
+                return;
+            }
+            case 'status': {
+                const s = await authStore_authStore.getSession();
+                if (s)
+                    console.log(source/* default */.Ay.green(`Logged in as ${s.email}`));
+                else
+                    console.log(source/* default */.Ay.yellow('Not logged in'));
+                return;
+            }
+            case 'whoami': {
+                const s = await authStore_authStore.getSession();
+                if (s)
+                    console.log(source/* default */.Ay.green(`${s.email}`));
+                else
+                    console.log(source/* default */.Ay.yellow('Not logged in'));
+                return;
+            }
+            case 'list-users': {
+                const users = await authStore_authStore.getUsers();
+                if (!users || users.length === 0) {
+                    console.log(source/* default */.Ay.yellow('No users registered'));
+                    return;
+                }
+                console.log(source/* default */.Ay.green('Registered users:'));
+                users.forEach(u => console.log(' - ' + u.email));
+                return;
+            }
+            default: {
+                showAuthHelp();
+                return;
+            }
+        }
+    }
+    catch (err) {
+        console.log(source/* default */.Ay.red('❌'), err.message || String(err));
+    }
+}
+function showAuthHelp() {
+    const cfg = {
+        commandName: 'auth',
+        emoji: '🔐',
+        description: 'Manage authentication for the CLI (register, login, logout, status, 2FA verification).',
+        usage: [
+            'auth register',
+            'auth login',
+            'auth login --email <email> --password <password>',
+            'auth logout',
+            'auth status',
+            'auth verify',
+            'auth whoami',
+            'auth list-users',
+        ],
+        options: [
+            { flag: '--email <email>', description: 'Email for non-interactive actions' },
+            { flag: '--password <password>', description: 'Password for non-interactive actions' },
+            { flag: '-h, --help', description: 'Show help for the auth command' },
+        ],
+        examples: [
+            { command: 'auth register', description: 'Interactive registration' },
+            { command: 'auth login', description: 'Interactive login' },
+            { command: 'auth login --email me@you.com --password hunter2', description: 'Non-interactive login (use with care)' },
+            { command: 'auth verify', description: 'Enable and verify 2FA for your account' },
+            { command: 'auth logout', description: 'Logout from the CLI' },
+            { command: 'auth status', description: 'Show current login status' },
+            { command: 'auth whoami', description: 'Show current user email' },
+            { command: 'auth list-users', description: 'List all registered users' },
+        ],
+        tips: [
+            '🔒 2FA (Google Authenticator) is required for unlimited CLI access.',
+            'Unverified users can only use 3 commands before verification is required.',
+            'Passwords are stored as scrypt hashes with per-user salt. Keep your machine secure.',
+            'Use "pi auth verify" to enable 2FA and unlock all features.',
+        ],
+    };
+    (0,helpFormatter/* createStandardHelp */.ht)(cfg);
+}
+
 ;// ./dist/index.js
 //#!/usr/bin/env node
 
@@ -66785,7 +69524,9 @@ globalThis.path = external_path_;
 
 
 
+
 // Import utilities
+
 
 
 
@@ -66809,6 +69550,15 @@ const packageJson = JSON.parse((0,external_fs_.readFileSync)(packageJsonPath, 'u
 const VERSION = packageJson.version;
 // Initialize CLI program
 const dist_program = new Command();
+// Initialize auth store early
+(async () => {
+    try {
+        await initAuthStore();
+    }
+    catch (err) {
+        // non-fatal
+    }
+})();
 // Create beautiful blue gradient for CLI name
 const gradientTitle = (0,dist/* default */.Ay)(['#0072ff', '#00c6ff', '#0072ff']);
 const piGradient = (0,dist/* default */.Ay)(['#00c6ff', '#0072ff']);
@@ -66820,6 +69570,46 @@ dist_program
     .configureHelp({
     sortSubcommands: true,
     subcommandTerm: (cmd) => cmd.name(),
+});
+// Global preAction: enforce login for most commands, whitelist a few
+dist_program.hook('preAction', async (thisCommand, actionCommand) => {
+    const name = actionCommand.name();
+    // Commands allowed without login (help, version, auth, cache --help etc.)
+    const allowed = ['auth', 'help', 'version', 'cache'];
+    if (allowed.includes(name))
+        return;
+    // Also allow if user requested help/version via flags anywhere on the command line
+    const argv = process.argv.slice(2).map(a => a.toLowerCase());
+    const helpFlags = ['-h', '--help'];
+    const versionFlags = ['-v', '-V', '--version'];
+    if (argv.some(a => helpFlags.includes(a) || versionFlags.includes(a)))
+        return;
+    const logged = await authStore_authStore.isLoggedIn();
+    if (!logged) {
+        console.log('\n' + source/* default */.Ay.red('❌ You must be logged in to use this command.'));
+        console.log(source/* default */.Ay.gray(`Run: pi auth --help to see authentication options`));
+        process.exit(1);
+    }
+    // 2FA enforcement and usage limit for unverified users
+    const session = await authStore_authStore.getSession();
+    if (session && session.email) {
+        const isVerified = await authStore_authStore.isVerified(session.email);
+        // Allow verify, logout, help for unverified users
+        const authSub = argv[1] || '';
+        if (!isVerified) {
+            if (name === 'auth' && ['verify', 'logout', '', undefined].includes(authSub))
+                return;
+            // Usage limit enforcement for unverified users
+            const allowed = await authStore_authStore.incrementUsage(session.email).catch(() => false);
+            if (!allowed) {
+                console.log('\n' + source/* default */.Ay.red('❌ You have reached the maximum number of allowed commands as an unverified user.'));
+                console.log(source/* default */.Ay.yellow('Please verify your account with: pi auth verify'));
+                process.exit(1);
+            }
+            // Show warning for unverified users
+            console.log(source/* default */.Ay.yellow('⚠️  Your account is not verified. You have limited access until you complete 2FA.'));
+        }
+    }
 });
 /**
  * Enhanced error handler with better formatting
@@ -66937,6 +69727,25 @@ dist_program
     }
     catch (error) {
         handleCommandError('add feature', error);
+    }
+});
+// AUTH COMMAND - authentication and user management (subcommand pattern like cache)
+dist_program
+    .command('auth')
+    .description(source/* default */.Ay.hex('#00d2d3')('🔐 ') + source/* default */.Ay.hex('#95afc0')('Authentication and user management'))
+    .argument('[subcommand]', 'Auth subcommand (login, register, logout, status, whoami, list-users)')
+    .argument('[value]', 'Optional value for subcommand (not used)')
+    .option('--email <email>', 'Email for login/register')
+    .option('--password <password>', 'Password for login/register')
+    .option('-h, --help', 'Show help for auth command')
+    .allowUnknownOption(true)
+    .on('--help', () => { showAuthHelp(); })
+    .action(async (subcommand, value, options) => {
+    try {
+        await handleAuthOptions(subcommand, value, options);
+    }
+    catch (error) {
+        handleCommandError('auth', error);
     }
 });
 // UPGRADE-CLI COMMAND - Update CLI to latest version
@@ -67165,6 +69974,7 @@ dist_program.on('--help', () => {
         source/* default */.Ay.hex('#95afc0')('  ') + piGradient('pi') + ' ' + commandGradient('check') + source/* default */.Ay.hex('#95afc0')('                   # Check package versions') + '\n' +
         source/* default */.Ay.hex('#95afc0')('  ') + piGradient('pi') + ' ' + commandGradient('check') + source/* default */.Ay.hex('#95afc0')(' react             # Check specific package') + '\n' +
         source/* default */.Ay.hex('#95afc0')('  ') + piGradient('pi') + ' ' + commandGradient('email') + source/* default */.Ay.hex('#95afc0')('                   # Contact developer with feedback') + '\n' +
+        source/* default */.Ay.hex('#95afc0')('  ') + piGradient('pi') + ' ' + commandGradient('auth') + source/* default */.Ay.hex('#95afc0')('                    # Manage CLI authentication (login/register/status)') + '\n' +
         source/* default */.Ay.hex('#ff6b6b')('🌍 REPOSITORY & DEPLOYMENT') + '\n' +
         source/* default */.Ay.hex('#95afc0')('  ') + piGradient('pi') + ' ' + commandGradient('clone') + source/* default */.Ay.hex('#95afc0')('                   # Clone repositories interactively') + '\n' +
         source/* default */.Ay.hex('#95afc0')('  ') + piGradient('pi') + ' ' + commandGradient('clone') + source/* default */.Ay.hex('#95afc0')(' facebook/react    # Clone popular repositories') + '\n' +
@@ -67205,6 +70015,7 @@ if (process.argv.length === 2) {
         source/* default */.Ay.hex('#ffa502')('Need help? Try these:') + '\n\n' +
         source/* default */.Ay.hex('#ff6b6b')('  ') + piGradient('pi') + ' ' + source/* default */.Ay.hex('#ff6b6b')('--help') + source/* default */.Ay.hex('#95afc0')('           # See all available commands') + '\n' +
         source/* default */.Ay.hex('#95afc0')('  ') + piGradient('pi') + ' ' + source/* default */.Ay.hex('#95afc0')('command --help') + source/* default */.Ay.hex('#95afc0')('   # Get detailed help for any command') + '\n\n' +
+        source/* default */.Ay.hex('#95afc0')('  ') + piGradient('pi') + ' ' + source/* default */.Ay.hex('#95afc0')('auth --help') + source/* default */.Ay.hex('#95afc0')('      # Detailed help for authentication commands') + '\n\n' +
         source/* default */.Ay.hex('#00d2d3')('💡 Pro tip: All commands are interactive - just run them and follow prompts!'), {
         padding: 1,
         borderStyle: 'round',
@@ -67222,5 +70033,15 @@ if (process.argv.length === 2) {
     }
 })();
 // Parse command line arguments
+// If user asked for auth help explicitly (pi auth --help), show our formatted auth help and exit
+const preArgs = process.argv.slice(2).map(a => String(a).toLowerCase());
+if (preArgs[0] === 'auth' && (preArgs.includes('--help') || preArgs.includes('-h'))) {
+    try {
+        showAuthHelp();
+    }
+    catch { }
+    ;
+    process.exit(0);
+}
 dist_program.parse();
 
