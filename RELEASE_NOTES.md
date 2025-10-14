@@ -1,4 +1,4 @@
-# Package Installer CLI v1.1.0 Release Notes
+# Package Installer CLI v2.2.0 Release Notes
 
 ## 🚀 Complete Cross-Platform CLI Release
 
@@ -108,4 +108,4 @@ Created by [Sharique Chaudhary](https://github.com/0xshariq)
 
 ---
 
-**Full Changelog**: https://github.com/0xshariq/go_package_installer_cli/commits/v1.1.0
+**Full Changelog**: https://github.com/0xshariq/go_package_installer_cli/commits/v2.2.0

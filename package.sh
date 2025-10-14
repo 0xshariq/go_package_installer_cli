@@ -5,7 +5,7 @@
 
 set -e
 
-VERSION="2.1.0"
+VERSION="2.2.0"
 BUILD_DIR="build"
 
 echo "🚀 Creating Package Installer CLI Release Packages v$VERSION"
