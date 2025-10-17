@@ -18,7 +18,9 @@
       ],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "restbed": {
       "type": "",
@@ -72,6 +74,39 @@
       ],
       "templates": [
         "react-nest-shadcn-template"
+      ]
+    },
+    "nextjs+next-auth+shadcn": {
+      "type": "fullstack",
+      "description": "Next.js full-stack solution with Next-Auth for authentication and Shadcn UI",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "templates": [
+        "nextjs-next-auth-shadcn"
+      ]
+    },
+    "nextjs+clerk+shadcn": {
+      "type": "fullstack",
+      "description": "Next.js full-stack solution with Clerk for authentication and Shadcn UI",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "templates": [
+        "nextjs-clerk-shadcn"
+      ]
+    },
+    "nextjs+auth0+shadcn": {
+      "type": "fullstack",
+      "description": "Next.js full-stack solution with Auth0 for authentication and Shadcn UI",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "templates": [
+        "nextjs-auth0-shadcn"
       ]
     }
   },
@@ -213,7 +248,9 @@
       ],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "unreal": {
       "type": "game",
@@ -224,7 +261,9 @@
       ],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     }
   },
   "go": {
@@ -436,6 +475,7 @@
       "type": "",
       "description": "Lightweight alternative to React.",
       "languages": [
+        "javascript",
         "typescript"
       ],
       "ui": [],
@@ -487,6 +527,7 @@
       "type": "",
       "description": "High-performance reactive UI library.",
       "languages": [
+        "javascript",
         "typescript"
       ],
       "ui": [],
@@ -497,6 +538,17 @@
       "type": "",
       "description": "Web Components framework by Ionic team.",
       "languages": [
+        "typescript"
+      ],
+      "ui": [],
+      "options": [],
+      "templates": []
+    },
+    "sveltejs": {
+      "type": "",
+      "description": "Cybernetically enhanced web apps.",
+      "languages": [
+        "javascript",
         "typescript"
       ],
       "ui": [],
@@ -558,7 +610,8 @@
         "typescript"
       ],
       "templates": [
-        "template"
+        "expo-cli-template",
+        "react-native-cli-template"
       ]
     },
     "swiftui": {
@@ -577,7 +630,9 @@
       "languages": [],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "dash": {
       "type": "python",
@@ -585,7 +640,9 @@
       "languages": [],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "django": {
       "type": "backend",
@@ -606,7 +663,9 @@
       "languages": [],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "fastapi": {
       "type": "api",
@@ -614,7 +673,9 @@
       "languages": [],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "flask": {
       "type": "backend",
@@ -635,7 +696,9 @@
       "languages": [],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "quart": {
       "type": "python",
@@ -643,7 +706,9 @@
       "languages": [],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "streamlit": {
       "type": "python",
@@ -651,7 +716,9 @@
       "languages": [],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "tornado": {
       "type": "python",
@@ -659,7 +726,9 @@
       "languages": [],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     }
   },
   "ruby": {
@@ -755,7 +824,9 @@
       ],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "brownie": {
       "type": "web3",
@@ -773,7 +844,9 @@
       "languages": [],
       "ui": [],
       "options": [],
-      "templates": []
+      "templates": [
+        "template"
+      ]
     },
     "foundry": {
       "type": "web3",

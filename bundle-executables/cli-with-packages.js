@@ -669,6 +669,7 @@ function generateVersionBanner() {
     return (0,boxen__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A)(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#00d2d3')('📦 Version: ') + chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#ffa502')(`v${version}`) +
         chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('  •  ') + chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#00d2d3')('🎯 Frameworks: ') + chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#ffa502')('75') +
         chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('  •  ') + chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#00d2d3')('📋 Templates: ') + chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#ffa502')('50+') +
+        chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('  •  ') + chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#00d2d3')('📋 Commands: ') + chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#ffa502')('22') +
         chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('  •  ') + chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#00d2d3')('⚡ Status: ') + chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#10ac84')('Ready to scaffold!'), {
         padding: { top: 0, bottom: 0, left: 2, right: 2 },
         borderStyle: 'round',
@@ -13740,13 +13741,13 @@ function showFeatureDisclaimer() {
  * Prompt for feature category selection
  */
 async function promptFeatureCategory(availableFeatures) {
-    const { feature } = await inquirer__WEBPACK_IMPORTED_MODULE_1__["default"].prompt([
+    const { feature } = await inquirer.prompt([
         {
             type: 'list',
             name: 'feature',
-            message: `${chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.blue('❯')} Choose a feature category to add:`,
+            message: `${chalk.blue('❯')} Choose a feature category to add:`,
             choices: availableFeatures.map(feature => ({
-                name: `${chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.green('▸')} ${capitalize(feature)}`,
+                name: `${chalk.green('▸')} ${capitalize(feature)}`,
                 value: feature,
                 short: feature
             })),
@@ -13759,13 +13760,13 @@ async function promptFeatureCategory(availableFeatures) {
  * Prompt for feature provider selection
  */
 async function promptFeatureProvider(category, providers) {
-    const { provider } = await inquirer__WEBPACK_IMPORTED_MODULE_1__["default"].prompt([
+    const { provider } = await inquirer.prompt([
         {
             type: 'list',
             name: 'provider',
-            message: `${chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.blue('❯')} Choose a ${category} provider:`,
+            message: `${chalk.blue('❯')} Choose a ${category} provider:`,
             choices: providers.map(provider => ({
-                name: `${chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.green('▸')} ${capitalize(provider.replace(/-/g, ' '))}`,
+                name: `${chalk.green('▸')} ${capitalize(provider.replace(/-/g, ' '))}`,
                 value: provider,
                 short: provider
             })),
@@ -13794,76 +13795,76 @@ function isFrameworkSupported(featureConfig, framework) {
  * Show enhanced setup instructions for specific features
  */
 function showEnhancedSetupInstructions(feature, provider) {
-    console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.green(`\n🔧 Setup Instructions for ${chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.bold(provider)} (${feature}):`));
+    console.log(chalk.green(`\n🔧 Setup Instructions for ${chalk.bold(provider)} (${feature}):`));
     switch (feature) {
         case 'auth':
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('1. Configure authentication provider credentials'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Add environment variables to .env file'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Set up authentication routes and middleware'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Update your app configuration'));
+            console.log(chalk.hex('#95afc0')('1. Configure authentication provider credentials'));
+            console.log(chalk.hex('#95afc0')('2. Add environment variables to .env file'));
+            console.log(chalk.hex('#95afc0')('3. Set up authentication routes and middleware'));
+            console.log(chalk.hex('#95afc0')('4. Update your app configuration'));
             break;
         case 'ai':
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('1. Get API key from your AI provider'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Add API key to .env file'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Test AI integration endpoints'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Configure rate limiting and error handling'));
+            console.log(chalk.hex('#95afc0')('1. Get API key from your AI provider'));
+            console.log(chalk.hex('#95afc0')('2. Add API key to .env file'));
+            console.log(chalk.hex('#95afc0')('3. Test AI integration endpoints'));
+            console.log(chalk.hex('#95afc0')('4. Configure rate limiting and error handling'));
             break;
         case 'database':
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('1. Set up your database connection'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Update connection string in .env'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Run migrations if needed'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Test database connectivity'));
+            console.log(chalk.hex('#95afc0')('1. Set up your database connection'));
+            console.log(chalk.hex('#95afc0')('2. Update connection string in .env'));
+            console.log(chalk.hex('#95afc0')('3. Run migrations if needed'));
+            console.log(chalk.hex('#95afc0')('4. Test database connectivity'));
             break;
         case 'aws':
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('1. Configure AWS credentials (AWS CLI or IAM roles)'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Set up required AWS permissions'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Update AWS region in configuration'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Test AWS service integration'));
+            console.log(chalk.hex('#95afc0')('1. Configure AWS credentials (AWS CLI or IAM roles)'));
+            console.log(chalk.hex('#95afc0')('2. Set up required AWS permissions'));
+            console.log(chalk.hex('#95afc0')('3. Update AWS region in configuration'));
+            console.log(chalk.hex('#95afc0')('4. Test AWS service integration'));
             break;
         case 'payment':
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('1. Get API keys from payment provider'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Add keys to .env file (separate test/live keys)'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Configure webhooks for payment events'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Test payment flow in sandbox mode'));
+            console.log(chalk.hex('#95afc0')('1. Get API keys from payment provider'));
+            console.log(chalk.hex('#95afc0')('2. Add keys to .env file (separate test/live keys)'));
+            console.log(chalk.hex('#95afc0')('3. Configure webhooks for payment events'));
+            console.log(chalk.hex('#95afc0')('4. Test payment flow in sandbox mode'));
             break;
         case 'storage':
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('1. Configure storage provider credentials'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Set up bucket/container permissions'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Add storage configuration to .env'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Test file upload/download functionality'));
+            console.log(chalk.hex('#95afc0')('1. Configure storage provider credentials'));
+            console.log(chalk.hex('#95afc0')('2. Set up bucket/container permissions'));
+            console.log(chalk.hex('#95afc0')('3. Add storage configuration to .env'));
+            console.log(chalk.hex('#95afc0')('4. Test file upload/download functionality'));
             break;
         case 'monitoring':
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('1. Get monitoring service API key'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Add configuration to .env file'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Set up error tracking and alerts'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Configure performance monitoring'));
+            console.log(chalk.hex('#95afc0')('1. Get monitoring service API key'));
+            console.log(chalk.hex('#95afc0')('2. Add configuration to .env file'));
+            console.log(chalk.hex('#95afc0')('3. Set up error tracking and alerts'));
+            console.log(chalk.hex('#95afc0')('4. Configure performance monitoring'));
             break;
         case 'analytics':
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('1. Get analytics service tracking ID'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Add tracking configuration'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Set up custom events and goals'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Verify data collection'));
+            console.log(chalk.hex('#95afc0')('1. Get analytics service tracking ID'));
+            console.log(chalk.hex('#95afc0')('2. Add tracking configuration'));
+            console.log(chalk.hex('#95afc0')('3. Set up custom events and goals'));
+            console.log(chalk.hex('#95afc0')('4. Verify data collection'));
             break;
         case 'docker':
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('1. Install Docker on your system'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Run: docker-compose up -d'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Your app will be available at the configured port'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Check logs: docker-compose logs'));
+            console.log(chalk.hex('#95afc0')('1. Install Docker on your system'));
+            console.log(chalk.hex('#95afc0')('2. Run: docker-compose up -d'));
+            console.log(chalk.hex('#95afc0')('3. Your app will be available at the configured port'));
+            console.log(chalk.hex('#95afc0')('4. Check logs: docker-compose logs'));
             break;
         case 'testing':
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('1. Configure test environment variables'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Set up test database/services'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Run tests: npm test'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Set up CI/CD test automation'));
+            console.log(chalk.hex('#95afc0')('1. Configure test environment variables'));
+            console.log(chalk.hex('#95afc0')('2. Set up test database/services'));
+            console.log(chalk.hex('#95afc0')('3. Run tests: npm test'));
+            console.log(chalk.hex('#95afc0')('4. Set up CI/CD test automation'));
             break;
         default:
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')(`1. Check the ${feature} configuration files`));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('2. Update .env file with necessary variables'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('3. Test the integration'));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('4. Review documentation for advanced setup'));
+            console.log(chalk.hex('#95afc0')(`1. Check the ${feature} configuration files`));
+            console.log(chalk.hex('#95afc0')('2. Update .env file with necessary variables'));
+            console.log(chalk.hex('#95afc0')('3. Test the integration'));
+            console.log(chalk.hex('#95afc0')('4. Review documentation for advanced setup'));
     }
-    console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('\n💡 Check your project files for any additional setup instructions'));
-    console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#95afc0')('🔗 Refer to the provider\'s official documentation for detailed configuration'));
+    console.log(chalk.hex('#95afc0')('\n💡 Check your project files for any additional setup instructions'));
+    console.log(chalk.hex('#95afc0')('🔗 Refer to the provider\'s official documentation for detailed configuration'));
 }
 /**
  * Show help for add command
@@ -13888,7 +13889,7 @@ async function showAddHelp() {
             { command: 'add', description: 'Interactive feature selection' },
             { command: 'add auth', description: 'Show auth providers dropdown' },
             { command: 'add auth clerk', description: 'Add Clerk authentication' },
-            { command: 'add aws ec2', description: 'Add AWS EC2 integration' },
+            { command: 'add aws ec2,s3,ecs', description: 'Add AWS EC2, S3, and ECS integration' },
             { command: 'add ai openai', description: 'Add OpenAI integration' },
             { command: 'add database postgres', description: 'Add PostgreSQL integration' },
             { command: 'add payment stripe', description: 'Add Stripe payment integration' },
@@ -13921,7 +13922,7 @@ async function showAddHelp() {
             'Use "pi add --list" to see detailed feature information'
         ]
     };
-    (0,_utils_helpFormatter_js__WEBPACK_IMPORTED_MODULE_6__/* .createStandardHelp */ .ht)(helpConfig);
+    (0,_utils_helpFormatter_js__WEBPACK_IMPORTED_MODULE_6__.createStandardHelp)(helpConfig);
 }
 /**
  * Main add command handler with enhanced syntax support
@@ -13936,6 +13937,49 @@ async function addCommand(feature, provider, options = {}) {
     try {
         // Ensure features are loaded first
         await (0,_utils_featureInstaller_js__WEBPACK_IMPORTED_MODULE_7__/* .ensureFeaturesLoaded */ .vV)();
+        // Batch processing: support comma-separated features and/or providers.
+        // Examples supported:
+        //  - pi add aws s3,ec2,ecs        (single feature, multiple providers)
+        //  - pi add auth,database         (multiple features, interactive providers)
+        //  - pi add auth,database clerk,prisma  (paired lists)
+        if (feature && (feature.includes(',') || (provider && provider.includes(',')))) {
+            const featureList = feature.split(',').map(f => f.trim()).filter(Boolean);
+            const providerList = provider ? provider.split(',').map(p => p.trim()).filter(Boolean) : [];
+            // Helper to dispatch a single pair
+            const runSingle = async (f, p) => {
+                // call addCommand recursively for each pair; avoid infinite loop as we pass single items
+                await addCommand(f, p, options);
+            };
+            // If only one feature but multiple providers -> add each provider for that feature
+            if (featureList.length === 1 && providerList.length > 0) {
+                for (const p of providerList) {
+                    await runSingle(featureList[0], p);
+                }
+                return;
+            }
+            // If multiple features and equal number of providers -> pair them
+            if (featureList.length > 1 && providerList.length === featureList.length) {
+                for (let i = 0; i < featureList.length; i++) {
+                    await runSingle(featureList[i], providerList[i]);
+                }
+                return;
+            }
+            // If multiple features and a single provider -> apply provider to all features
+            if (featureList.length > 1 && providerList.length === 1) {
+                for (const f of featureList) {
+                    await runSingle(f, providerList[0]);
+                }
+                return;
+            }
+            // If multiple features and no providers -> process each feature (interactive provider selection inside)
+            if (featureList.length > 1 && providerList.length === 0) {
+                for (const f of featureList) {
+                    await runSingle(f, undefined);
+                }
+                return;
+            }
+            // Fallback: if single feature and single provider (shouldn't reach here) just continue
+        }
         // Handle list flag
         if (options.list || feature === '--list' || feature === '-l') {
             await listAvailableFeatures();
@@ -14009,73 +14053,6 @@ async function addCommand(feature, provider, options = {}) {
         }
         const featuresConfig = await getFeaturesConfig();
         const availableFeatures = Object.keys(featuresConfig.features || {});
-        // Handle different command syntax cases
-        if (!feature) {
-            // Case 1: "pi add" - Show interactive dropdown for all features
-            const selectedFeature = await promptFeatureCategory(availableFeatures);
-            if (!selectedFeature)
-                return;
-            feature = selectedFeature;
-        }
-        // Validate feature exists
-        if (!availableFeatures.includes(feature)) {
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.red(`❌ Feature '${feature}' not found`));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.yellow(`💡 Available features: ${availableFeatures.join(', ')}`));
-            return;
-        }
-        const currentFeatureConfig = featuresConfig.features[feature];
-        if (!provider) {
-            // Case 2: "pi add <category>" - Show providers for category
-            const providers = getFeatureProviders(feature, currentFeatureConfig);
-            if (providers.length === 0) {
-                console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.yellow(`⚠️  No providers found for ${feature}`));
-                return;
-            }
-            if (providers.length === 1) {
-                provider = providers[0];
-                console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.cyan(`🔧 Using ${chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.bold(provider)} (only provider available)`));
-            }
-            else {
-                const selectedProvider = await promptFeatureProvider(feature, providers);
-                if (!selectedProvider)
-                    return;
-                provider = selectedProvider;
-            }
-        }
-        // Case 3: "pi add <category> <provider>" - Direct installation
-        // Validate provider exists for feature
-        const providers = getFeatureProviders(feature, currentFeatureConfig);
-        if (!providers.includes(provider)) {
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.red(`❌ Provider '${provider}' not found for ${feature}`));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.yellow(`💡 Available providers: ${providers.join(', ')}`));
-            return;
-        }
-        // Check framework compatibility
-        if (!isFrameworkSupported(currentFeatureConfig, projectInfo.framework)) {
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.red(`❌ ${feature} (${provider}) is not supported for ${projectInfo.framework}`));
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.yellow(`💡 Supported frameworks: ${currentFeatureConfig.supportedFrameworks?.join(', ') || 'Not specified'}`));
-            return;
-        }
-        // Install the feature
-        console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.hex('#00d2d3')(`\n🚀 Installing ${feature} (${provider})...\n`));
-        try {
-            await (0,_utils_featureInstaller_js__WEBPACK_IMPORTED_MODULE_7__/* .addFeature */ .Ue)(feature, provider, projectPath);
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.green(`\n✅ Successfully added ${feature} (${provider})`));
-            // Show setup instructions
-            showEnhancedSetupInstructions(feature, provider);
-            // Update history (if available)
-            try {
-                if ("addFeature" in _utils_historyManager_js__WEBPACK_IMPORTED_MODULE_8__/* .historyManager */ .O && typeof _utils_historyManager_js__WEBPACK_IMPORTED_MODULE_8__/* .historyManager */ .O.addFeature === 'function') {
-                    await _utils_historyManager_js__WEBPACK_IMPORTED_MODULE_8__/* .historyManager */ .O.addFeature(feature, provider, projectPath);
-                }
-            }
-            catch (error) {
-                // History update is optional
-            }
-        }
-        catch (error) {
-            console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.red(`\n❌ Failed to add ${feature} (${provider}): ${error}`));
-        }
         // Show additional project details
         if (projectInfo.packageManager) {
             console.log(chalk__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Ay.gray(`📦 Package manager: ${projectInfo.packageManager}`));
@@ -23531,7 +23508,7 @@ exports.firstValueFrom = firstValueFrom;
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ht: () => (/* binding */ createStandardHelp)
+/* harmony export */   createStandardHelp: () => (/* binding */ createStandardHelp)
 /* harmony export */ });
 /* unused harmony exports createQuickHelp, createErrorHelp */
 /* harmony import */ var chalk__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3757);
@@ -51438,8 +51415,11 @@ function generateTemplateName(framework, options) {
     if (config.templates && config.templates.length > 0) {
         // Build template name based on selected options
         const parts = [];
-        // Handle src option (only for nextjs and reactjs)
-        if ((framework === 'nextjs' || framework === 'reactjs') && config.options?.includes('src')) {
+        const templatesList = Array.isArray(config.templates) ? config.templates : [];
+        // Helper: check if any template mentions a token
+        const templateIncludes = (token) => templatesList.some(t => t.includes(token));
+        // Handle src option (only for nextjs) but only if templates actually include src/no-src
+        if ((framework === 'nextjs') && config.options?.includes('src') && templateIncludes('src')) {
             if (options.src) {
                 parts.push('src');
             }
@@ -51447,16 +51427,12 @@ function generateTemplateName(framework, options) {
                 parts.push('no-src');
             }
         }
-        // Handle UI library - only add if actually selected (not "none")
-        // When UI is "none", templates simply omit the UI part from their names
-        if (config.ui && config.ui.length > 0) {
-            if (options.ui && options.ui !== 'none') {
-                parts.push(options.ui);
-            }
-            // For "none" selection, don't add any UI part to the template name
+        // Handle UI library - only add if actually selected (not "none") and templates reference the UI token
+        if (config.ui && config.ui.length > 0 && options.ui && options.ui !== 'none' && templateIncludes(options.ui)) {
+            parts.push(options.ui);
         }
-        // Handle tailwind option
-        if (config.options?.includes('tailwind')) {
+        // Handle tailwind option only if templates contain tailwind/no-tailwind
+        if (config.options?.includes('tailwind') && templateIncludes('tailwind')) {
             if (options.tailwind) {
                 parts.push('tailwind');
             }
@@ -51464,7 +51440,11 @@ function generateTemplateName(framework, options) {
                 parts.push('no-tailwind');
             }
         }
-        const generatedName = parts.join('-') + '-template';
+        // Handle bundler option only if templates reference bundler token
+        if (config.bundlers && Array.isArray(config.bundlers) && options.bundler && templateIncludes(options.bundler)) {
+            parts.push(options.bundler);
+        }
+        const generatedName = (parts.length > 0 ? parts.join('-') + '-template' : '');
         // Find exact match in templates array
         const exactMatch = config.templates.find((template) => template === generatedName);
         if (exactMatch) {
@@ -51553,6 +51533,37 @@ function resolveTemplatePath(projectInfo) {
         if (!found) {
             // keep default baseFrameworkPath (top-level legacy location)
         }
+    }
+    // If a specific template name was provided, try to resolve that exact template folder
+    // across language subfolders and all top-level categories. This avoids returning a
+    // language directory (which would copy all templates) when the user selected a single template.
+    if (projectInfo && projectInfo.templateName) {
+        const requested = projectInfo.templateName;
+        // 1) try language-specific location under the discovered base path
+        if (projectInfo.language) {
+            const p = external_path_.join(baseFrameworkPath, projectInfo.language, requested);
+            if (fs_extra_lib.existsSync(p) && fs_extra_lib.statSync(p).isDirectory())
+                return p;
+        }
+        // 2) try baseFrameworkPath/templateName
+        const direct = external_path_.join(baseFrameworkPath, requested);
+        if (fs_extra_lib.existsSync(direct) && fs_extra_lib.statSync(direct).isDirectory())
+            return direct;
+        // 3) scan other categories under templates root to find the exact template folder
+        const topLevelItems = fs_extra_lib.readdirSync(templatesRoot, { withFileTypes: true });
+        for (const dirent of topLevelItems) {
+            if (!dirent.isDirectory())
+                continue;
+            const candidateLang = projectInfo.language
+                ? external_path_.join(templatesRoot, dirent.name, framework, projectInfo.language, requested)
+                : null;
+            if (candidateLang && fs_extra_lib.existsSync(candidateLang) && fs_extra_lib.statSync(candidateLang).isDirectory())
+                return candidateLang;
+            const candidate = external_path_.join(templatesRoot, dirent.name, framework, requested);
+            if (fs_extra_lib.existsSync(candidate) && fs_extra_lib.statSync(candidate).isDirectory())
+                return candidate;
+        }
+        // If nothing found, continue to the regular resolution logic which may return a sensible default.
     }
     // If a language-specific folder exists, prefer it
     // Use template.json config to resolve paths when available
@@ -52177,7 +52188,46 @@ const execAsync = (0,external_util_.promisify)(external_child_process_.exec);
  * Create a project from a template with progress indicators and error handling
  */
 async function createProjectFromTemplate(options) {
-    const { projectName, templatePath } = options;
+    const { projectName } = options;
+    // allow adjusting templatePath if a specific templateName was provided
+    let templatePath = options.templatePath;
+    const templateName = options.templateName;
+    const language = options.language;
+    // If a specific templateName was provided, try to resolve it under the given templatePath
+    if (templateName) {
+        // 1) language-specific location
+        if (language) {
+            const langCandidate = external_path_.join(templatePath, language, templateName);
+            if (await fs_extra_lib.pathExists(langCandidate) && (await fs_extra_lib.stat(langCandidate)).isDirectory()) {
+                templatePath = langCandidate;
+            }
+        }
+        // 2) direct template folder under templatePath
+        if (templatePath === options.templatePath) {
+            const directCandidate = external_path_.join(templatePath, templateName);
+            if (await fs_extra_lib.pathExists(directCandidate) && (await fs_extra_lib.stat(directCandidate)).isDirectory()) {
+                templatePath = directCandidate;
+            }
+        }
+        // 3) scan any subdirectories of templatePath to find an exact match (covers category mismatches)
+        if (templatePath === options.templatePath) {
+            try {
+                const items = await fs_extra_lib.readdir(options.templatePath, { withFileTypes: true });
+                for (const it of items) {
+                    if (!it.isDirectory())
+                        continue;
+                    const candidate = external_path_.join(options.templatePath, it.name, templateName);
+                    if (await fs_extra_lib.pathExists(candidate) && (await fs_extra_lib.stat(candidate)).isDirectory()) {
+                        templatePath = candidate;
+                        break;
+                    }
+                }
+            }
+            catch (err) {
+                // ignore scanning errors and let subsequent validation handle missing template
+            }
+        }
+    }
     const spinner = (0,node_modules_ora/* default */.Ay)(source/* default */.Ay.hex('#10ac84')('Creating project structure...')).start();
     try {
         // Handle "." as project name - create in current directory
@@ -52748,7 +52798,7 @@ function showCreateHelp() {
             'All templates support both JavaScript and TypeScript'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 /**
  * Main create project function with comprehensive prompt system
@@ -53322,11 +53372,11 @@ function showCheckHelp() {
             'check [options]'
         ],
         options: [
-            { flag: '-v, --verbose', description: 'Show detailed information for all packages' }
+        // verbose flag removed: command now shows full information by default
         ],
         examples: [
             { command: 'check', description: 'Check all packages in current project' },
-            { command: 'check --verbose', description: 'Check all packages with detailed info' },
+            { command: 'check', description: 'Check all packages with detailed info' },
             { command: 'check react', description: 'Check specific package version' },
             { command: 'check @types/node', description: 'Check scoped packages' },
             { command: 'check --help', description: 'Show this help message' }
@@ -53344,11 +53394,10 @@ function showCheckHelp() {
             }
         ],
         tips: [
-            'Use --verbose for detailed package information including security vulnerabilities',
             'Check specific packages by name for targeted updates'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 async function checkCommand(packageName, options) {
     // Check for help flag
@@ -53361,17 +53410,13 @@ async function checkCommand(packageName, options) {
         showCheckHelp();
         return;
     }
-    // Check for verbose flag
-    const isVerbose = packageName === '--verbose' || packageName === '-v' || options?.verbose;
-    // If verbose is the first argument, check all packages with verbose output
-    if (packageName === '--verbose' || packageName === '-v') {
-        packageName = undefined;
-    }
+    // The check command now shows full details by default (verbose removed)
+    const isVerbose = true;
     try {
         // Display command banner
         (0,banner/* displayCommandBanner */.kn)('Check', 'Check package versions and updates for your project dependencies');
         console.log('\n' + source/* default */.Ay.hex('#f39c12')('🔍 Starting package check...'));
-        if (packageName && packageName !== '--verbose' && packageName !== '-v') {
+        if (packageName) {
             await checkSinglePackage(packageName, isVerbose);
         }
         else {
@@ -53785,14 +53830,14 @@ function displayPackageInfo(packages, projectType, verbose = false, isMultiProje
     if (projectType) {
         console.log(`${source/* default */.Ay.hex('#00d2d3')('📋')} ${projectType.name} (${source/* default */.Ay.cyan(projectType.packageManager)})`);
     }
-    // Determine how many packages to show
-    const packagesToShow = verbose ? packages : packages.slice(0, 12);
-    // Group packages by status for better organization
+    // Since verbose mode is removed, show all packages by default
+    const packagesToShow = packages;
+    // Group packages by status for better organization (show all)
     const groupedPackages = [
-        ...deprecatedPackages.slice(0, verbose ? deprecatedPackages.length : 3),
-        ...outdatedPackages.slice(0, verbose ? outdatedPackages.length : 8),
-        ...upToDatePackages.slice(0, verbose ? upToDatePackages.length : 6)
-    ].slice(0, verbose ? packages.length : 12);
+        ...deprecatedPackages,
+        ...outdatedPackages,
+        ...upToDatePackages
+    ];
     if (groupedPackages.length > 0) {
         console.log('\n');
         // Compact table format
@@ -53816,26 +53861,7 @@ function displayPackageInfo(packages, projectType, verbose = false, isMultiProje
         });
     }
     // Show remaining packages summary when not in verbose mode
-    if (!verbose && packages.length > 12) {
-        const remaining = packages.length - groupedPackages.length;
-        const remainingOutdated = packages.filter(pkg => pkg.needsUpdate && !groupedPackages.includes(pkg)).length;
-        const remainingUpToDate = packages.filter(pkg => !pkg.needsUpdate && !pkg.isDeprecated && !groupedPackages.includes(pkg)).length;
-        console.log('\n' + source/* default */.Ay.gray('─'.repeat(80)));
-        const hiddenSummary = [
-            remainingUpToDate > 0 ? `${source/* default */.Ay.hex('#10ac84')('✅')} ${remainingUpToDate} more up-to-date` : null,
-            remainingOutdated > 0 ? `${source/* default */.Ay.hex('#f39c12')('⚠️')} ${remainingOutdated} more need updates` : null
-        ].filter(Boolean).join('  •  ');
-        if (hiddenSummary) {
-            console.log(`${source/* default */.Ay.dim(`+${remaining} hidden:`)} ${hiddenSummary}`);
-        }
-        // Show sample of remaining package names
-        if (remainingOutdated > 0) {
-            const sampleNames = packages.filter(pkg => pkg.needsUpdate && !groupedPackages.includes(pkg))
-                .slice(0, 4).map(pkg => pkg.name).join(', ');
-            console.log(`${source/* default */.Ay.dim('Outdated:')} ${sampleNames}${remainingOutdated > 4 ? '...' : ''}`);
-        }
-        console.log(`\n${source/* default */.Ay.cyan('💡')} Use ${source/* default */.Ay.bold('--verbose')} to see all ${packages.length} packages`);
-    }
+    // No 'hidden' summary - all packages are shown
     // Compact recommendations section
     if (outdatedPackages.length > 0 || deprecatedPackages.length > 0) {
         console.log('\n' + source/* default */.Ay.hex('#667eea')('💡 Quick Actions:'));
@@ -53869,6 +53895,222 @@ async function cachePackageCheckResults(packageInfos, projectType) {
     }
     catch (error) {
         // Silent fail - caching is not critical
+    }
+}
+
+;// ./dist/commands/size.js
+
+
+
+
+function humanBytes(bytes) {
+    if (bytes < 1024)
+        return `${bytes} B`;
+    const units = ['KB', 'MB', 'GB', 'TB'];
+    let i = -1;
+    do {
+        bytes = bytes / 1024;
+        i++;
+    } while (bytes >= 1024 && i < units.length - 1);
+    return `${bytes.toFixed(2)} ${units[i]}`;
+}
+async function folderSize(p) {
+    let total = 0;
+    try {
+        const stats = await fs_extra_lib.stat(p);
+        if (stats.isFile())
+            return stats.size;
+        if (stats.isDirectory()) {
+            const items = await fs_extra_lib.readdir(p);
+            for (const item of items) {
+                const itemPath = external_path_.join(p, item);
+                total += await folderSize(itemPath);
+            }
+        }
+    }
+    catch (err) {
+        // ignore permission errors
+    }
+    return total;
+}
+async function listLargestFiles(p, limit = 10) {
+    const results = [];
+    async function walk(curr) {
+        try {
+            const stats = await fs_extra_lib.stat(curr);
+            if (stats.isFile()) {
+                results.push({ file: curr, size: stats.size });
+                return;
+            }
+            if (stats.isDirectory()) {
+                const items = await fs_extra_lib.readdir(curr);
+                for (const item of items) {
+                    await walk(external_path_.join(curr, item));
+                }
+            }
+        }
+        catch (err) {
+            // ignore
+        }
+    }
+    await walk(p);
+    results.sort((a, b) => b.size - a.size);
+    return results.slice(0, limit);
+}
+async function showSizeHelp() {
+    const { createStandardHelp } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, 4120));
+    const helpConfig = {
+        commandName: 'Size',
+        emoji: '📏',
+        description: 'Show size of files and directories. Supports multiple paths and summary output.',
+        usage: ['size [paths...]', 'size -a [paths...]', 'size --top <n> [paths...]'],
+        options: [
+            { flag: '-a, --all', description: 'Show sizes for all files and folders (verbose)' },
+            { flag: '--top <n>', description: 'Show top N largest files (default 10)' },
+            { flag: '--json', description: 'Output machine-readable JSON' }
+        ],
+        examples: [
+            { command: 'size .', description: 'Show size for current directory' },
+            { command: 'size src package.json', description: 'Show sizes for multiple paths' },
+            { command: 'size -a src', description: 'List all files and folders sizes under src' }
+        ]
+    };
+    // createStandardHelp is exported as named function; call it
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    createStandardHelp(helpConfig);
+}
+async function sizeCommand(targets, options) {
+    try {
+        (0,banner/* displayCommandBanner */.kn)('size', 'Show file or folder sizes');
+        // Normalize targets to an array
+        let paths = [];
+        if (!targets) {
+            paths = ['.'];
+        }
+        else if (Array.isArray(targets)) {
+            paths = targets.length === 0 ? ['.'] : targets;
+        }
+        else if (typeof targets === 'string') {
+            paths = [targets];
+        }
+        // Resolve and dedupe
+        paths = Array.from(new Set(paths.map(p => p === '.' ? process.cwd() : external_path_.resolve(process.cwd(), p))));
+        const topN = options?.top ? Number(options.top) : 10;
+        const showAll = !!options?.all;
+        const jsonOutput = !!options?.json;
+        let combinedTotal = 0;
+        const combinedFiles = [];
+        const resultsPerPath = [];
+        for (const p of paths) {
+            if (!await fs_extra_lib.pathExists(p)) {
+                console.log(source/* default */.Ay.red(`❌ Path not found: ${p}`));
+                continue;
+            }
+            const stats = await fs_extra_lib.stat(p);
+            if (stats.isFile()) {
+                const entry = { path: p, type: 'file', size: stats.size };
+                if (jsonOutput)
+                    resultsPerPath.push(entry);
+                else {
+                    console.log(`\n${source/* default */.Ay.cyan('File:')} ${p}`);
+                    console.log(`${source/* default */.Ay.cyan('Size:')} ${source/* default */.Ay.bold(humanBytes(stats.size))}`);
+                }
+                combinedTotal += stats.size;
+                combinedFiles.push({ file: p, size: stats.size });
+                continue;
+            }
+            const total = await folderSize(p);
+            combinedTotal += total;
+            if (jsonOutput)
+                resultsPerPath.push({ path: p, type: 'directory', size: total });
+            else {
+                console.log(`\n${source/* default */.Ay.cyan('Directory:')} ${p}`);
+                console.log(`${source/* default */.Ay.cyan('Total size:')} ${source/* default */.Ay.bold(humanBytes(total))}`);
+            }
+            if (showAll) {
+                // Walk directory and print sizes for every file and nested folder
+                if (!jsonOutput)
+                    console.log(source/* default */.Ay.hex('#00d2d3')('\nListing all files and folders with sizes (may be verbose):'));
+                async function walkAndPrint(curr) {
+                    try {
+                        const s = await fs_extra_lib.stat(curr);
+                        if (s.isFile()) {
+                            if (jsonOutput)
+                                resultsPerPath.push({ path: curr, type: 'file', size: s.size });
+                            else
+                                console.log(`${source/* default */.Ay.yellow(humanBytes(s.size)).padEnd(10)} ${source/* default */.Ay.gray(curr)}`);
+                            combinedFiles.push({ file: curr, size: s.size });
+                            return;
+                        }
+                        if (s.isDirectory()) {
+                            const items = await fs_extra_lib.readdir(curr);
+                            let folderTotal = 0;
+                            for (const it of items) {
+                                const ip = external_path_.join(curr, it);
+                                const childSize = await folderSize(ip);
+                                folderTotal += childSize;
+                                await walkAndPrint(ip);
+                            }
+                            if (jsonOutput)
+                                resultsPerPath.push({ path: curr, type: 'directory', size: folderTotal });
+                            else
+                                console.log(`${source/* default */.Ay.blue('Dir Total:')} ${source/* default */.Ay.bold(humanBytes(folderTotal)).padEnd(10)} ${source/* default */.Ay.gray(curr)}`);
+                        }
+                    }
+                    catch (err) {
+                        // ignore
+                    }
+                }
+                await walkAndPrint(p);
+            }
+            else if (topN > 0) {
+                const largest = await listLargestFiles(p, topN);
+                if (jsonOutput) {
+                    const last = resultsPerPath[resultsPerPath.length - 1];
+                    if (last)
+                        last.top = largest.map(f => ({ file: f.file, size: f.size }));
+                }
+                else {
+                    console.log(`\n${source/* default */.Ay.hex('#667eea')('Top ' + topN + ' largest files in ' + p + ':')}`);
+                    largest.forEach((f, idx) => {
+                        console.log(`${String(idx + 1).padStart(2)}. ${source/* default */.Ay.yellow(humanBytes(f.size)).padEnd(10)} ${source/* default */.Ay.gray(f.file)}`);
+                        combinedFiles.push(f);
+                    });
+                }
+            }
+        }
+        // JSON output
+        if (jsonOutput) {
+            const uniqCombined = Array.from(new Map(combinedFiles.map(f => [f.file, f])).values());
+            uniqCombined.sort((a, b) => b.size - a.size);
+            const out = {
+                scannedPaths: paths,
+                perPath: resultsPerPath,
+                combinedSize: combinedTotal,
+                topFiles: uniqCombined.slice(0, topN).map(f => ({ file: f.file, size: f.size }))
+            };
+            console.log(JSON.stringify(out, null, 2));
+            return;
+        }
+        // Combined summary (human)
+        if (paths.length > 1) {
+            console.log('\n' + source/* default */.Ay.hex('#00d2d3')('📦 Combined Summary'));
+            console.log(`${source/* default */.Ay.cyan('Paths scanned:')} ${paths.length}`);
+            console.log(`${source/* default */.Ay.cyan('Combined size:')} ${source/* default */.Ay.bold(humanBytes(combinedTotal))}`);
+            if (topN > 0 && combinedFiles.length > 0) {
+                const uniqCombined = Array.from(new Map(combinedFiles.map(f => [f.file, f])).values());
+                uniqCombined.sort((a, b) => b.size - a.size);
+                console.log(`\n${source/* default */.Ay.hex('#667eea')('Top ' + topN + ' largest files across all inputs:')}`);
+                uniqCombined.slice(0, topN).forEach((f, idx) => {
+                    console.log(`${String(idx + 1).padStart(2)}. ${source/* default */.Ay.yellow(humanBytes(f.size)).padEnd(10)} ${source/* default */.Ay.gray(f.file)}`);
+                });
+            }
+        }
+    }
+    catch (err) {
+        console.error(source/* default */.Ay.red('❌ Failed to calculate size:'), err.message || err);
+        process.exit(1);
     }
 }
 
@@ -54630,7 +54872,7 @@ function showCloneHelp() {
             'Shallow clones are faster but have limited git history'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 async function clone_cloneRepo(userRepo, projectName, options = {}) {
     const startTime = Date.now();
@@ -54740,7 +54982,7 @@ function showUpgradeHelp() {
             'Use npm install -g package-installer-cli@<version> to rollback'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 /**
  * Get current CLI version
@@ -56572,7 +56814,7 @@ function showUpdateHelp() {
             'Use --latest flag with caution as it may introduce breaking changes'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 
 // EXTERNAL MODULE: external "os"
@@ -56636,7 +56878,7 @@ function showAnalyzeHelp() {
             'Use --reset to start fresh analytics tracking'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 /**
  * Main analyze command function
@@ -63593,7 +63835,7 @@ function showDeployHelp() {
             'Environment variables can be configured per platform'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 /**
  * Main deploy command function
@@ -64336,7 +64578,7 @@ function showCleanHelp() {
             'Use --cache to clean package manager caches for more space'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 /**
  * Main clean command function
@@ -64705,7 +64947,7 @@ function showCacheHelp() {
             'Use --size to check cache disk usage before clearing'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 const CLI_CACHE_DIR = '.package-installer-cli';
 /**
@@ -65256,7 +65498,7 @@ function showEnvironmentHelp() {
             'Validate .env files to catch configuration issues early'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 /**
  * Main environment command function
@@ -65915,7 +66157,7 @@ function showDoctorHelp() {
         ]
     };
     console.clear();
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 /**
  * Main doctor command function
@@ -68308,166 +68550,16 @@ function email_getSystemInfo() {
         };
     }
 }
-/**
- * Configure Email MCP Server with user's email credentials
- */
-async function configureEmailMcp() {
-    try {
-        console.log((0,node_modules_boxen/* default */.A)(source/* default */.Ay.hex('#00d2d3')('🔧 Email Configuration Setup') + '\n\n' +
-            source/* default */.Ay.white('To send emails, we need to configure your email credentials.') + '\n' +
-            source/* default */.Ay.hex('#95afc0')('Your credentials will be stored securely and used only for sending feedback emails.') + '\n\n' +
-            source/* default */.Ay.hex('#ffa502')('Supported Email Providers:') + '\n' +
-            source/* default */.Ay.hex('#95afc0')('• Gmail (recommended)') + '\n' +
-            source/* default */.Ay.hex('#95afc0')('• Outlook/Hotmail') + '\n' +
-            source/* default */.Ay.hex('#95afc0')('• Yahoo') + '\n' +
-            source/* default */.Ay.hex('#95afc0')('• Custom SMTP servers'), {
-            padding: 1,
-            margin: 1,
-            borderStyle: 'round',
-            borderColor: 'cyan'
-        }));
-        // Collect email configuration
-        const emailConfig = await lib["default"].prompt([
-            {
-                type: 'list',
-                name: 'provider',
-                message: 'Select your email provider:',
-                choices: [
-                    { name: '📧 Gmail', value: 'gmail' },
-                    { name: '🔷 Outlook/Hotmail', value: 'outlook' },
-                    { name: '🟡 Yahoo', value: 'yahoo' },
-                    { name: '⚙️ Custom SMTP', value: 'custom' }
-                ]
-            },
-            {
-                type: 'input',
-                name: 'email',
-                message: 'Enter your email address:',
-                validate: (input) => {
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    return emailRegex.test(input) || 'Please enter a valid email address';
-                }
-            },
-            {
-                type: 'password',
-                name: 'password',
-                message: (answers) => {
-                    if (answers.provider === 'gmail') {
-                        return 'Enter your Gmail App Password (not regular password):';
-                    }
-                    return 'Enter your email password or app password:';
-                },
-                validate: (input) => input.length > 0 || 'Password is required'
-            }
-        ]);
-        // Add custom SMTP settings if needed
-        let smtpConfig = {};
-        if (emailConfig.provider === 'custom') {
-            smtpConfig = await lib["default"].prompt([
-                {
-                    type: 'input',
-                    name: 'host',
-                    message: 'SMTP Host (e.g., smtp.gmail.com):',
-                    validate: (input) => input.length > 0 || 'SMTP host is required'
-                },
-                {
-                    type: 'input',
-                    name: 'port',
-                    message: 'SMTP Port (e.g., 587):',
-                    default: '587',
-                    validate: (input) => {
-                        const port = parseInt(input);
-                        return (port > 0 && port <= 65535) || 'Please enter a valid port number';
-                    }
-                }
-            ]);
-        }
-        // Set provider-specific SMTP settings
-        let host, port;
-        switch (emailConfig.provider) {
-            case 'gmail':
-                host = 'smtp.gmail.com';
-                port = '587';
-                break;
-            case 'outlook':
-                host = 'smtp.live.com';
-                port = '587';
-                break;
-            case 'yahoo':
-                host = 'smtp.mail.yahoo.com';
-                port = '587';
-                break;
-            case 'custom':
-                host = smtpConfig.host;
-                port = smtpConfig.port;
-                break;
-            default:
-                host = 'smtp.gmail.com';
-                port = '587';
-        }
-        // Show provider-specific setup instructions
-        if (emailConfig.provider === 'gmail') {
-            console.log((0,node_modules_boxen/* default */.A)(source/* default */.Ay.hex('#ffa502')('📧 Gmail Setup Instructions') + '\n\n' +
-                source/* default */.Ay.hex('#95afc0')('For Gmail, you need to use an App Password:') + '\n' +
-                source/* default */.Ay.hex('#95afc0')('1. Enable 2-Factor Authentication in your Google Account') + '\n' +
-                source/* default */.Ay.hex('#95afc0')('2. Go to Google Account Settings > Security') + '\n' +
-                source/* default */.Ay.hex('#95afc0')('3. Under "2-Step Verification", click "App passwords"') + '\n' +
-                source/* default */.Ay.hex('#95afc0')('4. Generate a new app password for "Mail"') + '\n' +
-                source/* default */.Ay.hex('#95afc0')('5. Use that 16-character password above') + '\n\n' +
-                source/* default */.Ay.hex('#00d2d3')('💡 Regular Gmail passwords will NOT work!'), {
-                padding: 1,
-                margin: 1,
-                borderStyle: 'round',
-                borderColor: 'yellow'
-            }));
-        }
-        // Create .env content
-        const envContent = `# Email MCP Server Configuration
-# Generated by Package Installer CLI
-EMAIL_HOST=${host}
-EMAIL_PORT=${port}
-EMAIL_USER=${emailConfig.email}
-EMAIL_PASS=${emailConfig.password}
-EMAIL_SECURE=false
-EMAIL_TLS=true
-`;
-        // Find Email MCP Server directory and create .env file
-        const mcpInfo = await checkEmailMcpAvailability();
-        let envFilePath;
-        if (mcpInfo.installationType === 'local' && mcpInfo.path) {
-            // Local installation - create .env in the project directory
-            const projectDir = external_path_.dirname(mcpInfo.path);
-            envFilePath = external_path_.join(projectDir, '.env');
-        }
-        else {
-            // Global or npx installation - create .env in home directory
-            const configDir = external_path_.join(external_os_.homedir(), '.email-mcp-server');
-            await fs_extra_lib.ensureDir(configDir);
-            envFilePath = external_path_.join(configDir, '.env');
-        }
-        // Write .env file
-        await fs_extra_lib.writeFile(envFilePath, envContent, 'utf8');
-        console.log((0,node_modules_boxen/* default */.A)(source/* default */.Ay.green('✅ Email Configuration Saved!') + '\n\n' +
-            source/* default */.Ay.white('Email credentials have been configured successfully.') + '\n' +
-            source/* default */.Ay.hex('#95afc0')(`Configuration saved to: ${source/* default */.Ay.cyan(envFilePath)}`) + '\n\n' +
-            source/* default */.Ay.hex('#00d2d3')('You can now send feedback emails using the CLI!') + '\n' +
-            source/* default */.Ay.hex('#95afc0')('Test the setup with: ') + source/* default */.Ay.cyan('pi email --test'), {
-            padding: 1,
-            margin: 1,
-            borderStyle: 'round',
-            borderColor: 'green'
-        }));
-        return true;
-    }
-    catch (error) {
-        console.error(source/* default */.Ay.red(`❌ Failed to configure email: ${error.message}`));
-        return false;
-    }
-}
+// NOTE: interactive configuration was removed. We delegate permanent setup
+// to the Email MCP Server installer (npx @0xshariq/email-mcp-server setup or email-cli setup).
+// The CLI will instruct the user to run the external setup command which persists config.
 /**
  * Check if email is configured and prompt for setup if needed
  */
 async function ensureEmailConfigured() {
+    // If Email MCP Server is available but not configured, run the external setup command
+    // interactively so the user can persist configuration. This keeps setup centralized
+    // in the email CLI implementation.
     const mcpInfo = await checkEmailMcpAvailability();
     if (!mcpInfo.available) {
         console.log(source/* default */.Ay.yellow('⚠️ Email MCP Server not installed. Please install it first:'));
@@ -68475,8 +68567,36 @@ async function ensureEmailConfigured() {
         return false;
     }
     if (!mcpInfo.configured) {
-        console.log(source/* default */.Ay.yellow('⚠️ Email not configured. Setting up email configuration...'));
-        return await configureEmailMcp();
+        console.log(source/* default */.Ay.yellow('⚠️ Email not configured. Running email CLI setup to configure your environment...'));
+        try {
+            let setupCmd = '';
+            const execOptions = { stdio: 'inherit', encoding: 'utf8' };
+            // Prefer the globally installed email-cli setup command if available, otherwise use npx
+            switch (mcpInfo.installationType) {
+                case 'global':
+                    setupCmd = 'email-cli setup';
+                    break;
+                case 'npx':
+                    // npx may prompt to install/run interactively
+                    setupCmd = 'npx @0xshariq/email-mcp-server setup';
+                    break;
+                case 'local':
+                    setupCmd = `node "${mcpInfo.path}" setup`;
+                    execOptions.cwd = external_path_.dirname(mcpInfo.path);
+                    break;
+                default:
+                    setupCmd = 'email-cli setup';
+            }
+            (0,external_child_process_.execSync)(setupCmd, execOptions);
+            // Re-check availability/configuration
+            const refreshed = await checkEmailMcpAvailability();
+            return refreshed.available && !!refreshed.configured;
+        }
+        catch (err) {
+            console.log(source/* default */.Ay.red('❌ Failed to run external email setup command. Please run manually:'));
+            console.log(source/* default */.Ay.cyan('email-cli setup') + '  ' + source/* default */.Ay.gray('(or: npx @0xshariq/email-mcp-server setup)'));
+            return false;
+        }
     }
     return true;
 }
@@ -68599,8 +68719,15 @@ async function collectSenderEmailOption() {
  * Supports both plain text and HTML emails
  * Uses user's configured or custom email to send to khanshariq92213@gmail.com
  */
-async function sendEmailViaMcp(subject, body, htmlBody, customCredentials) {
+async function sendEmailViaMcp(subject, body, htmlBody, customCredentials, forceHtml = false) {
     let tempEnvFile = '';
+    let tempHtmlFile = '';
+    let execOptions = {
+        stdio: 'pipe',
+        timeout: 45000,
+        encoding: 'utf8',
+        env: { ...(process.env || {}) }
+    };
     try {
         const mcpInfo = await checkEmailMcpAvailability();
         if (!mcpInfo.available) {
@@ -68640,23 +68767,17 @@ EMAIL_SECURE=false
 EMAIL_TLS=true
 `;
             await fs_extra_lib.writeFile(tempEnvFile, tempEnvContent);
-            // Set environment variable to use the temporary config
-            process.env.EMAIL_CONFIG_PATH = tempEnvFile;
+            // Ensure execOptions.env contains the temporary config path so child process will see it
+            execOptions.env = { ...(process.env || {}), EMAIL_CONFIG_PATH: tempEnvFile };
         }
         // Create temporary files for HTML content if provided
-        let tempHtmlFile = '';
         let command = '';
-        let options = {
-            stdio: 'pipe',
-            timeout: 45000,
-            encoding: 'utf8'
-        };
         if (htmlBody) {
-            // Try HTML email with ehtml command (if supported) or fall back to esend
+            // Try HTML email with ehtml command (if supported) or fall back to eattach/esend
             const tempDir = external_os_.tmpdir();
             tempHtmlFile = external_path_.join(tempDir, `email-${Date.now()}.html`);
             try {
-                await fs_extra_lib.writeFile(tempHtmlFile, htmlBody);
+                await fs_extra_lib.writeFile(tempHtmlFile, htmlBody, 'utf8');
                 // Try HTML command first
                 const htmlArgs = [to, subject, tempHtmlFile];
                 const escapedHtmlArgs = htmlArgs.map(arg => `"${arg.replace(/"/g, '\\"')}"`).join(' ');
@@ -68669,27 +68790,48 @@ EMAIL_TLS=true
                         break;
                     case 'local':
                         command = `node "${mcpInfo.path}" ehtml ${escapedHtmlArgs}`;
-                        options.cwd = external_path_.dirname(mcpInfo.path);
+                        execOptions.cwd = external_path_.dirname(mcpInfo.path);
                         break;
                 }
                 try {
-                    const output = (0,external_child_process_.execSync)(command, options);
+                    const output = (0,external_child_process_.execSync)(command, execOptions);
                     return true;
                 }
                 catch (htmlError) {
-                    // If HTML command fails, fall back to regular esend
-                    console.log(source/* default */.Ay.yellow('ℹ️ HTML email not supported, sending as rich text...'));
+                    // If ehtml isn't available or fails, try sending as attachment (eattach)
+                    try {
+                        console.log(source/* default */.Ay.yellow('ℹ️ ehtml failed, attempting to send HTML as attachment (eattach)'));
+                        const attachArgs = [to, subject, 'Please see attached HTML message', tempHtmlFile];
+                        const escapedAttachArgs = attachArgs.map(arg => `"${arg.replace(/"/g, '\"')}"`).join(' ');
+                        switch (mcpInfo.installationType) {
+                            case 'npx':
+                                command = `npx @0xshariq/email-mcp-server eattach ${escapedAttachArgs}`;
+                                break;
+                            case 'global':
+                                command = `email-cli eattach ${escapedAttachArgs}`;
+                                break;
+                            case 'local':
+                                command = `node "${mcpInfo.path}" eattach ${escapedAttachArgs}`;
+                                execOptions.cwd = external_path_.dirname(mcpInfo.path);
+                                break;
+                        }
+                        const out = (0,external_child_process_.execSync)(command, execOptions);
+                        return true;
+                    }
+                    catch (attachError) {
+                        // If forceHtml is requested, fail immediately instead of falling back
+                        if (forceHtml) {
+                            console.log(source/* default */.Ay.red('❌ HTML delivery failed and --force-html was specified. Not falling back to plain text.'));
+                            return false;
+                        }
+                        console.log(source/* default */.Ay.yellow('ℹ️ eattach also failed, will fall back to plain text send with HTML stripped'));
+                    }
                 }
             }
             catch (fileError) {
                 console.log(source/* default */.Ay.yellow('ℹ️ Could not create HTML file, sending as plain text...'));
             }
-            finally {
-                // Clean up temp file
-                if (tempHtmlFile && await fs_extra_lib.pathExists(tempHtmlFile)) {
-                    await fs_extra_lib.remove(tempHtmlFile);
-                }
-            }
+            // Do not remove tempHtmlFile here yet; cleanup in finally block below
         }
         // Fall back to regular text email
         const args = [to, subject, body];
@@ -68704,12 +68846,12 @@ EMAIL_TLS=true
                 break;
             case 'local':
                 command = `node "${mcpInfo.path}" esend ${escapedArgs}`;
-                options.cwd = external_path_.dirname(mcpInfo.path);
+                execOptions.cwd = external_path_.dirname(mcpInfo.path);
                 break;
             default:
                 throw new Error('Unknown installation type');
         }
-        const output = (0,external_child_process_.execSync)(command, options);
+        const output = (0,external_child_process_.execSync)(command, execOptions);
         return true;
     }
     catch (error) {
@@ -68743,6 +68885,9 @@ EMAIL_TLS=true
         try {
             if (tempEnvFile && await fs_extra_lib.pathExists(tempEnvFile)) {
                 await fs_extra_lib.remove(tempEnvFile);
+            }
+            if (tempHtmlFile && await fs_extra_lib.pathExists(tempHtmlFile)) {
+                await fs_extra_lib.remove(tempHtmlFile);
             }
             if (process.env.EMAIL_CONFIG_PATH) {
                 delete process.env.EMAIL_CONFIG_PATH;
@@ -69006,6 +69151,7 @@ async function showEmailHelp() {
         options: [
             { flag: '-h, --help', description: 'Show this help message' },
             { flag: '-l, --list', description: 'List all available email categories' },
+            { flag: '--force-html', description: 'Require HTML and fail if HTML cannot be sent (no fallback to plain text)' },
             { flag: '--install', description: 'Show Email MCP Server installation instructions' },
             { flag: '--setup', description: 'Configure your email credentials for sending feedback' },
             { flag: '--status', description: 'Check email system status and availability' },
@@ -69060,7 +69206,7 @@ async function showEmailHelp() {
             'Your contact info is optional but helpful for follow-up'
         ]
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(helpConfig);
+    (0,helpFormatter.createStandardHelp)(helpConfig);
 }
 /**
  * Main email command handler
@@ -69084,7 +69230,36 @@ async function emailCommand(category, options = {}) {
         }
         // Handle setup flag
         if (options.setup) {
-            await configureEmailMcp();
+            // Delegate permanent setup to the Email MCP Server installer (npx/global/local)
+            const mcpInfo = await checkEmailMcpAvailability();
+            if (!mcpInfo.available) {
+                console.log(source/* default */.Ay.yellow('⚠️ Email MCP Server not installed. Please install it first:'));
+                console.log(source/* default */.Ay.cyan('npm install -g @0xshariq/email-mcp-server'));
+                return;
+            }
+            try {
+                let setupCmd = '';
+                const execOptions = { stdio: 'inherit', encoding: 'utf8' };
+                switch (mcpInfo.installationType) {
+                    case 'npx':
+                        setupCmd = 'npx @0xshariq/email-mcp-server setup';
+                        break;
+                    case 'global':
+                        setupCmd = 'email-cli setup';
+                        break;
+                    case 'local':
+                        setupCmd = `node "${mcpInfo.path}" setup`;
+                        execOptions.cwd = external_path_.dirname(mcpInfo.path);
+                        break;
+                    default:
+                        setupCmd = 'npx @0xshariq/email-mcp-server setup';
+                }
+                (0,external_child_process_.execSync)(setupCmd, execOptions);
+            }
+            catch (err) {
+                console.log(source/* default */.Ay.red('❌ Failed to run external email setup command. Please run manually:'));
+                console.log(source/* default */.Ay.cyan('npx @0xshariq/email-mcp-server setup'));
+            }
             return;
         }
         // Handle status flag
@@ -69252,7 +69427,7 @@ async function emailCommand(category, options = {}) {
                 provider: senderOption.customProvider || 'gmail'
             };
         }
-        const success = await sendEmailViaMcp(subject, plainBody, htmlBody, customCredentials);
+        const success = await sendEmailViaMcp(subject, plainBody, htmlBody, customCredentials, !!options.forceHtml);
         if (success) {
             console.log((0,node_modules_boxen/* default */.A)(source/* default */.Ay.green('✅ Email sent successfully!') + '\n\n' +
                 source/* default */.Ay.white('Thank you for your feedback!') + '\n' +
@@ -69847,7 +70022,7 @@ function showAuthHelp() {
             'Use "pi auth verify" to enable 2FA and unlock all features.',
         ],
     };
-    (0,helpFormatter/* createStandardHelp */.ht)(cfg);
+    (0,helpFormatter.createStandardHelp)(cfg);
 }
 
 ;// ./dist/utils/timer.js
@@ -69894,6 +70069,7 @@ globalThis.path = external_path_;
 
 
 // Import command handlers
+
 
 
 
@@ -70066,6 +70242,28 @@ dist_program
     }
     catch (error) {
         handleCommandError('check packages', error);
+    }
+});
+// SIZE COMMAND - Show file/folder sizes
+dist_program
+    .command('size')
+    .description(source/* default */.Ay.hex('#95afc0')('📏 Show size of files or directories'))
+    .argument('[paths...]', source/* default */.Ay.hex('#95afc0')('One or more paths to files or directories (defaults to cwd)'))
+    .option('-a, --all', 'Show all files and folders with their sizes')
+    .option('--json', 'Output machine-readable JSON')
+    .option('--top <n>', 'Show top N largest files', '10')
+    .option('-h, --help', 'Display help for this command')
+    .on('--help', () => { showSizeHelp(); })
+    .action(async (paths, options) => {
+    try {
+        if (options.help) {
+            showSizeHelp();
+            return;
+        }
+        await sizeCommand(paths, options);
+    }
+    catch (error) {
+        handleCommandError('size', error);
     }
 });
 // CLONE COMMAND - GitHub repository cloning
@@ -70312,6 +70510,7 @@ dist_program
     .option('--setup', source/* default */.Ay.hex('#95afc0')('Show email configuration setup guide'))
     .option('--status', source/* default */.Ay.hex('#95afc0')('Check email system status and availability'))
     .option('--test', source/* default */.Ay.hex('#95afc0')('Send a test email to verify functionality'))
+    .option('--force-html', source/* default */.Ay.hex('#95afc0')('Require HTML and fail if HTML cannot be sent (no fallback)'))
     .option('--commands', source/* default */.Ay.hex('#95afc0')('Show all available Email MCP Server commands'))
     .option('--dev', source/* default */.Ay.hex('#95afc0')('Show development setup information and troubleshooting'))
     .option('--quick', source/* default */.Ay.hex('#95afc0')('Quick feedback mode with minimal prompts'))
